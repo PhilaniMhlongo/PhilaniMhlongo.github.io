@@ -180,6 +180,9 @@ ul {
 
 .Skills {
     padding: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
 }
 
 .Skills h2 {
@@ -200,7 +203,7 @@ ul {
     max-width: 200px;
 }
 
-.SkillCard img {
+.Picture {
     max-width: 100%;
     height: auto;
 }

@@ -1,27 +1,24 @@
 import React from "react";
-import PropTypes from "prop-types";
 import SkillCard from "./SkillCard";
+import skills from "../data/skill.json";
 
-const skills = require("../data/skill.json");
+function createSkill(skill){
+    return (
+        <SkillCard
+            key={skill.id}
+            img={skill.image}
+            alt={skill.Alt}
+            txt={skill.text}
+        />
+    );
+}
 
-const Skills = ({ id }) => (
-    <section className="Skills" id={id}>
-        <h2>{skills.skillsTitle}</h2>
-        <div className="SkillsList">
-            {skills.List.map(({ image, Alt, text }) => (
-                <SkillCard
-                    image={image}
-                    alt={Alt}
-                    text={text}
-                    key={Alt}
-                />
-            ))}
+function Skills(){
+    return (
+        <div className="Skills">
+            {skills.map(skill => createSkill(skill))}
         </div>
-    </section>
-);
-
-Skills.propTypes = {
-    id: PropTypes.string.isRequired,
-};
+    );
+}
 
 export default Skills;

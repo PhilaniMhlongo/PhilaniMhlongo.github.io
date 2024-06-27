@@ -1,17 +1,19 @@
-{
-  "skillsTitle": "SKILLS",
-  "List": [
-    {"image": "../data/image/frontEnd.svg",
-      "Alt" : "front end icon",
-      "text": "Turning design Mockup to functioning code"
+
+[
+    {   "id":1,
+        "image": "https://raw.githubusercontent.com/PhilaniMhlongo/PhilaniMhlongo.github.io/main/img/frontEnd.svg",
+        "Alt" : "front end icon",
+        "text": "Turning design Mockup to functioning code"
     },
-    {"image": "../data/image/backEnd.svg",
-      "Alt" : "back end icon",
-      "text": "Back End logic"
+    {   "id":2,
+        "image": "https://raw.githubusercontent.com/PhilaniMhlongo/PhilaniMhlongo.github.io/main/img/backEnd.svg",
+        "Alt" : "back end icon",
+        "text": "Back End logic"
     },
-    {"image": "../data/image/test.svg",
-      "Alt" : "testing icon",
-      "text": "TDD"
+    {   "id":3,
+        "image": "https://raw.githubusercontent.com/PhilaniMhlongo/PhilaniMhlongo.github.io/main/img/test.svg",
+        "Alt" : "testing icon",
+        "text": "TDD"
     }
   ]
-}
+

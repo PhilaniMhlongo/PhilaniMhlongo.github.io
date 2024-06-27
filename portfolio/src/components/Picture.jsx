@@ -1,20 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Picture from "./Picture"
 
-function SkillCard(props){
+function Picture({ img, alt, txt }){
     return (
-        <div className="SkillCard">
-        <Picture img={props.img} alt={props.alt} txt={props.txt}/>
+        <div className="Picture">
+            <img src={img} alt={alt} />
+            <p>{txt}</p>
         </div>
     );
 }
 
-
-SkillCard.propTypes = {
+Picture.propTypes = {
     img: PropTypes.string.isRequired,
     alt: PropTypes.string.isRequired,
     txt: PropTypes.string.isRequired
 };
 
-export default SkillCard;
+export default Picture;
