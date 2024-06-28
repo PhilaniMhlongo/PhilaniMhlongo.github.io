@@ -6,7 +6,9 @@ function SkillCard(props){
     return (
         <div className="SkillCard">
         <Picture img={props.img} alt={props.alt} txt={props.txt}/>
+
         </div>
+
     );
 }
 
