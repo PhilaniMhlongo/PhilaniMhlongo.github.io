@@ -53,7 +53,9 @@ const Navbar = ({ toggleTheme, theme }) => {
     <header>
       <nav className="navbar">
         <div className="logo">
-          <h1>{logo}</h1>
+          <a href="#">
+
+          </a>
         </div>
         {mobileMenu(toggleTheme, theme)}
         {/* desktop menu */}

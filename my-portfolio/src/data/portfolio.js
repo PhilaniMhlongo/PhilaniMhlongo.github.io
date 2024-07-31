@@ -51,11 +51,11 @@ const experience = {
   title: "Experience",
   experiences: [
     {
-      title: "Frontend Developer",
-      company: "XYZ Company",
-      duration: "Mar 2021 - Present",
+      title: "Student",
+      company: "WTC_",
+      duration: "Sep 2023 - Present",
       description:
-        "I am currently working as a frontend developer at XYZ Company. Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas nisi incidunt, repellendus doloribus voluptates debitis porro ut illo eaque repudiandae corporis tenetur unde quae consectetur obcaecati iusto nostrum expedita iste! ",
+        "I have been actively honing my skills in software development through various projects and coursework. My hands-on experience includes developing applications like a React-based blog and an interactive typing tutorial program using Java. These projects have provided me with a solid foundation in programming languages, frameworks, and software development principles",
     },
   ],
 };
