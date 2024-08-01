@@ -28,5 +28,5 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
-  "homepage": "https://philanimhlongo.github.io/PhilaniMhlongo"
+  "homepage": "https://philanimhlongo.github.io/PhilaniMhlongo.github.io"
 }
