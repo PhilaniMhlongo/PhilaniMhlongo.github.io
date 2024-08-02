@@ -2,7 +2,7 @@
   "name": "my-portfolio",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://philanimhlongo.github.io/",
+  "homepage": "https://philanimhlongo.github.io/PhilaniMhlongo.github.io/",
   "type": "module",
   "scripts": {
     "dev": "vite",
