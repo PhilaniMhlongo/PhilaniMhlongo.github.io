@@ -118,3 +118,72 @@ main {
   background-color: #2496ed;
   color: #fff;
 }
+.flutter {
+  background-color: #02569b;
+  color: #fff;
+}
+
+.dart {
+  background-color: #0175c2;
+  color: #fff;
+}
+
+.aws-lambda {
+  background-color: #ff9900;
+  color: #000;
+}
+
+.api-gateway {
+  background-color: #a166ff;
+  color: #fff;
+}
+
+.dynamodb {
+  background-color: #4053d6;
+  color: #fff;
+}
+
+.aws-sam {
+  background-color: #ff9900;
+  color: #000;
+}
+
+.cloudformation {
+  background-color: #ff4f8b;
+  color: #fff;
+}
+
+.iac {
+  background-color: #232f3e;
+  color: #fff;
+}
+
+.vpc {
+  background-color: #ff9900;
+  color: #000;
+}
+
+.ec2 {
+  background-color: #ff9900;
+  color: #000;
+}
+
+.rds {
+  background-color: #527fff;
+  color: #fff;
+}
+
+.efs {
+  background-color: #ff9900;
+  color: #000;
+}
+
+.alb {
+  background-color: #ff9900;
+  color: #000;
+}
+
+.iam {
+  background-color: #dd344c;
+  color: #fff;
+}

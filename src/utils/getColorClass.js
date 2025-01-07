@@ -40,6 +40,34 @@ const getColorClass = (tech) => {
       return "java";
     case "#Docker":
       return "docker";
+    case "#Flutter":
+      return "flutter";
+    case "#Dart":
+      return "dart";
+    case "#AWS Lambda":
+      return "aws-lambda";
+    case "#API Gateway":
+      return "api-gateway";
+    case "#DynamoDB":
+      return "dynamodb";
+    case "#AWS SAM":
+      return "aws-sam";
+    case "#CloudFormation":
+      return "cloudformation";
+    case "#IaC":
+      return "iac";
+    case "#VPC":
+      return "vpc";
+    case "#EC2":
+      return "ec2";
+    case "#RDS":
+      return "rds";
+    case "#EFS":
+      return "efs";
+    case "#ALB":
+      return "alb";
+    case "#IAM":
+      return "iam";
     default:
       return "";
   }
