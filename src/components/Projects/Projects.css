@@ -49,7 +49,8 @@
   font-size: 1rem;
   line-height: 1.5;
   margin-bottom: 2rem;
-  text-align: justify;
+  color: var(--text-secondary);
+  text-align: left;
 }
 .container-grid .project-card .technology-stack {
   font-weight: 500;
