@@ -26,19 +26,19 @@ const projects = {
         "Cloud-native API for self-storage management using AWS serverless technologies.",
       description:
         "A serverless backend system leveraging an event-driven microservices architecture with AWS SAM features secure user authentication using Amazon Cognito, RESTful API endpoints powered by API Gateway and Lambda, and scalable data storage with DynamoDB.",
-      technologies: ["#React.js"],
-      github: "#",
-      demo: "#",
+      technologies: ["#DynamoDB", "AWS-Lambda", "#Python", "#AWS SAM"],
+      github: "https://github.com/PhilaniMhlongo/capstone-project",
+      demo: "https://github.com/PhilaniMhlongo/capstone-project",
     },
     {
       title: "Simple Flutter Alphabet Book App",
       short:
         "Educational mobile app helping toddlers learn the alphabet through interactive features.",
       description:
-        "This Online Store is a comprehensive e-commerce platform designed for a seamless shopping experience. Built with a modern tech stack, it features a user-friendly interface, product categorization, search functionality, and secure checkout processes. Customers can browse products, view detailed descriptions, add items to their cart, and complete purchases with ease. The store also includes an administrative dashboard for managing inventory, orders, and customer information. With a focus on performance and usability, this project highlights the potential of technology in creating efficient and engaging online shopping experiences.",
-      technologies: ["#React.js", "#Node.js", "#MongoDB"],
-      github: "#",
-      demo: "#",
+        "A child-focused learning application features interactive alphabet learning for ages 2-5, audio pronunciation on tap functionality, an offline-first design for uninterrupted learning, and is built with Flutter and Dart for cross-platform compatibility",
+      technologies: ["#Dart", "#Flutter"],
+      github: "https://github.com/PhilaniMhlongo/An-Alphabet-Book",
+      demo: "https://github.com/PhilaniMhlongo/An-Alphabet-Book",
     },
   ],
 };
@@ -51,7 +51,7 @@ const experience = {
       company: "Wethinkcode_",
       duration: "Sep 2023 - Dec 2024",
       description:
-        "I have been actively honing my skills in software development through various projects and coursework. My hands-on experience includes developing applications like a React-based blog and an interactive typing tutorial program using Java. These projects have provided me with a solid foundation in programming languages, frameworks, and software development principles",
+        "I have been actively honing my skills in software development and cloud technologies at WeThinkCode_ through various my personal project, including creating an end-to-end Infrastructure as Code solution for WordPress hosting with features such as a multi-tier VPC architecture, auto-scaling EC2 instances, managed RDS for MySQL, and infrastructure automation using CloudFormation, as well as designing a serverless backend system leveraging event-driven microservices with AWS SAM, secure user authentication via Amazon Cognito, and scalable data storage using DynamoDB, alongside developing a child-focused learning application built with Flutter and Dart, featuring interactive alphabet learning and offline-first functionality.",
     },
   ],
 };
@@ -61,15 +61,29 @@ const skills = {
   mySkills: [
     {
       title: "Languages & Frameworks",
-      skills: ["#HTML", "#CSS", "#JavaScript", "#Java", "#React.js"],
+      skills: [
+        "#HTML",
+        "#CSS",
+        "#JavaScript",
+        "#Java",
+        "#React.js",
+        "#Flutter",
+      ],
     },
     {
       title: "Databases",
-      skills: ["#MongoDB", "#PostgreSQL"],
+      skills: ["#DynamoDB", "#PostgreSQL"],
     },
     {
       title: "Others",
-      skills: ["#Git", "#Docker", "#CI/CD"],
+      skills: [
+        "#Git",
+        "#Docker",
+        "#CI/CD",
+        "#CloudFormation",
+        "#API Gateway",
+        "#IaC",
+      ],
     },
   ],
 };

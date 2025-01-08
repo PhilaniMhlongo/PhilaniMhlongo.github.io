@@ -22,7 +22,7 @@ const getColorClass = (tech) => {
       return "nextjs";
     case "#Firebase":
       return "firebase";
-    case "#Jest":
+    case "#Python":
       return "jest";
     case "#CI/CD":
       return "cicd";
@@ -44,7 +44,7 @@ const getColorClass = (tech) => {
       return "flutter";
     case "#Dart":
       return "dart";
-    case "#AWS Lambda":
+    case "#AWS-Lambda":
       return "aws-lambda";
     case "#API Gateway":
       return "api-gateway";
