@@ -1,0 +1,56 @@
+{
+  "infrastructure": {
+    "terraform": {
+      "level": "novice",
+      "years": 1,
+      "description": "Infrastructure as Code"
+    },
+    "ansible": {
+      "level": "novice",
+      "years": 1,
+      "description": "Configuration Management"
+    },
+    "kubernetes": {
+      "level": "beginner",
+      "years": 0.5,
+      "description": "Container Orchestration"
+    },
+    "docker": {
+      "level": "intermediate",
+      "years": 2,
+      "description": "Containerization & Dev Environments"
+    }
+  },
+  "cicd": {
+    "jenkins": {
+      "level": "intermediate",
+      "years": 2,
+      "description": "CI/CD Pipeline Automation"
+    },
+    
+    "gitlab_ci": {
+      "level": "intermediate",
+      "years": 2,
+      "description": "GitLab CI/CD"
+    }
+  },
+  "monitoring": {
+    "prometheus": {
+      "level": "beginner",
+      "years": 0.5,
+      "description": "Metrics and Monitoring"
+    },
+    "grafana": {
+      "level": "beginner",
+      "years": 0.5,
+      "description": "Data Visualization"
+    }
+  },
+  "backend": {
+    "spring_boot": {
+      "level": "novice",
+      "years": 1,
+      "description": "Java-based Backend Framework"
+    }
+  }
+}
