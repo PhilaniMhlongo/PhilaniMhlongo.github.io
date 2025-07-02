@@ -25,9 +25,3 @@
    npm run dev
 ```
 
-##  Forking this repo and copying code
-
-I encourage you to do it. Let me know if you do. Also feel free to create pull requests if you think you've made an improvement.
-
-
-<hr/>
