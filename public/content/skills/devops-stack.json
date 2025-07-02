@@ -1,13 +1,6 @@
 {
 
-  "cloud": {
-    "aws": {
-      "level": "novice",
-      "years": 1,
-      "description": "Amazon Web Services - EC2, S3, VPC, IAM, Lambda"
-    },
-  }
-
+  
   "infrastructure": {
     "terraform": {
       "level": "novice",
@@ -61,5 +54,15 @@
       "years": 1,
       "description": "Java-based Backend Framework"
     }
+  },
+  "cloud": {
+    "aws": {
+      "level": "novice",
+      "years": 1,
+      "description": "Amazon Web Services - EC2, S3, VPC, IAM, Lambda"
+    }
   }
 }
+
+
+
