@@ -19,10 +19,10 @@ export const fileSystem: FileSystemItem[] = [
         description: "This interactive web-based terminal portfolio.",
         children: [
           {
-            name: "README.md",
+            name: "readme.md",
             type: "file",
             extension: "md",
-            contentPath: "/content/projects/terminal-portfolio/README.md",
+            contentPath: "/content/projects/terminal-portfolio/readme.md",
           },
 
         ],
