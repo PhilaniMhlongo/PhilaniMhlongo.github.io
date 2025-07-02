@@ -1,4 +1,13 @@
 {
+
+  "cloud": {
+    "aws": {
+      "level": "novice",
+      "years": 1,
+      "description": "Amazon Web Services - EC2, S3, VPC, IAM, Lambda"
+    },
+  },
+
   "infrastructure": {
     "terraform": {
       "level": "novice",
