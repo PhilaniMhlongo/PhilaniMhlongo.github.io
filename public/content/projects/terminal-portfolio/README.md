@@ -12,9 +12,7 @@ Built with **React + TypeScript**, **Tailwind CSS**, **Framer Motion**, and full
 
 ---
 
-## 🚀 Live Demo
-
-📎 [Visit the Portfolio](https://philanimhlongo.github.io/PhilaniMhlongo.github.io/)
+**[View on GitHub](https://github.com/philanimhlongo/PhilaniMhlongo.github.io)**
 
 ---
 

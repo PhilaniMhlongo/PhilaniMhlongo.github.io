@@ -44,7 +44,8 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
   }
 
   const executeCommand = async (cmd: string) => {
-    const [command, ...args] = cmd.trim().split(" ")
+    const lowerCmd = cmd.trim().toLowerCase()
+    const [command, ...args] = lowerCmd.split(" ")
     let output: string[] = []
 
     setSelectedFile(null)
