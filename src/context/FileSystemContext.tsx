@@ -9,6 +9,22 @@ export interface FileSystemItem {
 
 export const fileSystem: FileSystemItem[] = [
   {
+    name: "experience",
+    type: "directory",
+    description: "My work Exprience.",
+    children: [
+      {
+        
+            name: "oldmutual.py",
+            type: "file",
+            extension: "py",
+            contentPath: "/content/experience/oldmutual.py",
+  
+      },
+      
+    ],
+  },
+  {
     name: "projects",
     type: "directory",
     description: "A showcase of my recent work.",
@@ -55,6 +71,12 @@ export const fileSystem: FileSystemItem[] = [
         type: "file",
         extension: "md",
         contentPath: "/content/education/university.md",
+      },
+      {
+        name: "certification.yaml",
+        type: "file",
+        extension: "yaml",
+        contentPath: "/content/education/certification.yaml",
       },
     ],
   },

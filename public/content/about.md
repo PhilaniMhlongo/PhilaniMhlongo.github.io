@@ -1,26 +1,60 @@
 # Philani Mhlongo
 
-## DevOps Engineer
+## DevOps & Cloud Engineer
 
-> I’m a DevOps Engineer driven by a passion for building scalable, reliable infrastructure and automating processes from development to production. My focus is on empowering teams to move faster and safer through robust tooling, efficient pipelines, and cloud-native best practices.
+> I’m a DevOps Engineer passionate about building reliable cloud infrastructure, automating workflows, and creating systems that help teams ship faster with confidence. My journey into technology has been driven by curiosity, resilience, and a deep love for engineering scalable platforms.
 
-### What I Do
-- 🚀 **Infrastructure as Code** - Terraform, Ansible
-- 🔄 **CI/CD Pipelines** - Jenkins, GitHub Actions, GitLab CI
-- ☁️ **Cloud Platforms** - AWS
-- 🐳 **Containerization** - Docker, Kubernetes, Helm
-- 📊 **Monitoring & Observability** - Prometheus, Grafana
+Currently, I’m gaining real-world experience as a DevOps Engineering Intern at Old Mutual, working within enterprise environments focused on platform reliability, cloud operations, automation, and modern infrastructure practices.
 
-### Philosophy
-"Automate as code, and let Git be your single source of truth."
+My path into DevOps started with self-learning, building projects, and consistently pushing myself to understand how modern systems work behind the scenes — from Linux servers and CI/CD pipelines to Kubernetes clusters and cloud-native architectures.
 
+---
 
+## What I Do
 
+- 🚀 **Infrastructure as Code** — Terraform, AWS CloudFormation
+- 🔄 **CI/CD Engineering** — Azure DevOps
+- ☁️ **Cloud Platforms** — AWS, Azure
+- 🐳 **Containers & Orchestration** — Docker, Kubernetes, Helm
+- 📊 **Monitoring & Observability** — Prometheus, Grafana
+- 🐧 **Systems Engineering** — Linux, scripting, automation
 
-### Current Focus
-- Designing and deploying cloud infrastructure
-- Building and improving CI/CD pipelines
-- Exploring the Cloud Native ecosystem
+---
 
+## Experience
 
+### Old Mutual — DevOps Engineering Intern
 
+Working within the OMAR OIPA(CoE), contributing to:
+
+- CI/CD pipeline improvements
+- Infrastructure automation
+- Cloud operations and monitoring
+- Troubleshooting production environments
+- Platform reliability and operational efficiency
+
+During this journey, I’ve had the opportunity to learn from experienced engineers, helping me grow both technically and professionally.
+
+---
+
+## Certifications
+
+- AWS Certified Cloud Practitioner
+- AWS Certified CloudOps Engineer – Associate
+
+---
+
+## Philosophy
+
+> "Automate everything repetitive. Version everything important. Build systems that scale beyond yourself."
+
+---
+
+## Current Focus
+
+- Designing scalable cloud infrastructure
+- Kubernetes & cloud-native tooling
+- Platform engineering practices
+- Advanced AWS architecture
+- DevOps automation at enterprise scale
+- Building developer-focused tools and experiences

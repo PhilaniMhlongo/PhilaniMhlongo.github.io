@@ -1,0 +1,36 @@
+# certification.yaml
+# Cloud & DevOps Certifications
+
+certifications:
+  - name: AWS Certified Cloud Practitioner
+    provider: AWS
+    status: Certified
+    focus:
+      - Cloud Fundamentals
+      - AWS Services
+      - Billing & Pricing
+      - Security & Compliance
+
+  - name: AWS Certified CloudOps Engineer Associate
+    provider: AWS
+    status: Certified
+    focus:
+      - Cloud Operations
+      - Monitoring & Logging
+      - Automation
+      - Infrastructure Management
+
+career_path:
+  direction:
+    - DevOps Engineering
+    - Cloud Engineering
+    - Platform Engineering
+
+current_learning:
+  - Kubernetes
+  - CI/CD
+  - Terraform
+  - Linux
+  - Docker
+
+goal: "Build scalable and reliable cloud infrastructure using DevOps best practices."

@@ -2,58 +2,81 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
+    /* GitHub Dark Base */
+    --background: 215 28% 7%;
+    --foreground: 210 40% 96%;
+
+/* Surface Layer */
+    --card: 212 19% 11%;
+    --card-foreground: 210 40% 96%;
+--popover: 212 19% 11%;
+    --popover-foreground: 210 40% 96%;
+/* Infrastructure Blue */
+    --primary: 213 94% 58%;
+    --primary-foreground: 210 40% 98%;
+/* Terminal Green */
+    --accent: 125 70% 70%;
+    --accent-foreground: 215 28% 7%;
+/* Borders / Muted */
+    --secondary: 210 12% 16%;
+    --secondary-foreground: 210 40% 92%;
+--muted: 210 12% 21%;
+    --muted-foreground: 212 9% 59%;
+--border: 210 12% 21%;
+    --input: 210 12% 21%;
+/* Elevated Surfaces */
+    --surface-elevated: 210 18% 14%;
+/* System */
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
-    --radius: 0.5rem;
+--ring: 213 94% 58%;
+/* Sharper UI */
+    --radius: 0.25rem;
   }
 }
-
 @layer base {
   * {
     @apply border-border;
+    border-style: solid;
   }
-  body {
+html {
+    font-size: 14px;
+  }
+body {
     @apply bg-background text-foreground;
+margin: 0;
+font-family:
+      "Inter",
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      sans-serif;
+font-feature-settings:
+      "liga" 1,
+      "calt" 1,
+      "ss01" 1,
+      "cv01" 1;
+-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
-
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
-
 ::-webkit-scrollbar-track {
-  @apply bg-slate-800;
+  background: hsl(var(--background));
 }
-
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-600 rounded-full;
+  background: hsl(var(--border));
+  border-radius: 2px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-500;
+  background: hsl(var(--muted-foreground));
 }
-
 /* Terminal cursor animation */
 @keyframes blink {
   0%,
@@ -65,56 +88,55 @@
     opacity: 0;
   }
 }
-
 .terminal-cursor {
-  animation: blink 1s infinite;
+  animation: blink 1.2s steps(2, start) infinite;
 }
-
 /* Smooth transitions */
 * {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-property:
+  background-color,
+  border-color,
+  color,
+  opacity,
+  transform;
+transition-timing-function:
+  cubic-bezier(0.2, 0, 0, 1);
+transition-duration: 120ms;
 }
-
-/* Glass morphism effect */
-.glass {
-  backdrop-filter: blur(16px) saturate(180%);
-  background-color: rgba(17, 25, 40, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.125);
+::selection {
+  background: hsl(var(--primary) / 0.35);
+  color: hsl(var(--foreground));
 }
-
+code,
+pre,
+.terminal,
+.log,
+.mono {
+  font-family:
+    "JetBrains Mono",
+    "SFMono-Regular",
+    Consolas,
+    monospace;
+}
 /* Code syntax highlighting */
-.language-python .keyword {
-  color: #ff79c6;
+/* Infrastructure Syntax Theme */
+.language-python .keyword,
+.language-json .property,
+.language-markdown .title {
+  color: #2f81f7;
 }
-.language-python .string {
-  color: #f1fa8c;
+.language-python .string,
+.language-json .string {
+  color: #f0f6fc;
 }
 .language-python .comment {
-  color: #6272a4;
+  color: #8b949e;
 }
-.language-python .function {
-  color: #50fa7b;
-}
-
-.language-json .property {
-  color: #8be9fd;
-}
-.language-json .string {
-  color: #f1fa8c;
-}
-.language-json .number {
-  color: #bd93f9;
-}
-
-.language-markdown .title {
-  color: #ff79c6;
-}
+.language-python .function,
 .language-markdown .code {
-  color: #50fa7b;
+  color: #7ee787;
 }
+.language-json .number,
 .language-markdown .list {
-  color: #8be9fd;
-} 
+  color: #a5d6ff;
+}
