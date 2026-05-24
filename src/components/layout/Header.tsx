@@ -103,14 +103,6 @@ function formatUptime(
   )}h ${String(m).padStart(2, "0")}m`
 }
 
-function utcNow(): string {
-  return (
-    new Date()
-      .toISOString()
-      .replace("T", " ")
-      .slice(0, 19) + " UTC"
-  )
-}
 
 /* ──────────────────────────────────────────────────────────
    Small Components
