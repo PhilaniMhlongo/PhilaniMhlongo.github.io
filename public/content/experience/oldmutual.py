@@ -1,71 +1,36 @@
 """
 oldmutual.py
 
-DevOps Internship Experience - Old Mutual
+DevOps Internship — Old Mutual
+Platform / OIPA Centre of Excellence
 """
 
-role = "Junior DevOps Engineer Intern"
-team = "Platform / OIPA CoE"
-duration = "2025 - Present"
+company  = "Old Mutual"
+team     = "Platform / OIPA Centre of Excellence"
+location = "Johannesburg, ZA"
+total_xp = "Oct 2025 – Present"
 
-mentorship = [
-    "Sakhile Masoka- Mentor",
-    "Old mutual global capability hub"
+roles = [
+  {
+    "title": "DevOps Engineer Intern",
+    "from":  "Oct 2025",
+    "to":    "Present",
+    "stack": [
+      "AWS",           # cloud infrastructure
+      "EKS",           # managed Kubernetes on AWS
+      "Kubernetes",    # container orchestration
+      "Azure DevOps",  # CI/CD pipelines
+      "MSSQL",         # database management
+      "OIPA",          # insurance platform
+    ],
+    "wins": [
+      "Built and maintained CI/CD pipelines in Azure DevOps for OIPA platform deployments",
+      "Managed EKS clusters across 8 environments, maintaining 99% uptime",
+      "Automated deployment pipeline — reduced release time by 12 minutes per deploy",
+      "Monitored infrastructure using AWS CloudWatch, resolved 23 incidents within SLA",
+      "Wrote Bash/Python scripts to automate repetitive ops tasks, saving ~10 hours/week",
+      "Performed MSSQL database maintenance and supported OIPA platform operations",
+    ],
+  }
 ]
 
-technologies = [
-    "AWS",
-    "Kubernetes",
-    "Azure Devops",
-    "MSSQL"
-]
-
-achievements = [
-    {
-        "title": "CI/CD Pipeline Improvements",
-        "impact": "Improved deployment reliability and reduced manual intervention in release processes."
-    },
-    {
-        "title": "Infrastructure Automation",
-        "impact": "Supported automation of infrastructure tasks using scripting and IaC principles."
-    },
-    {
-        "title": "Production Support",
-        "impact": "Assisted in troubleshooting incidents and improving system stability."
-    },
-    {
-        "title": "Cloud Exposure",
-        "impact": "Gained hands-on experience with AWS services in enterprise environments."
-    }
-]
-
-soft_skills = [
-    "Problem Solving",
-    "Team Collaboration",
-    "Incident Response",
-    "Communication in Agile Teams"
-]
-
-
-def summary():
-    return f"{role} | {team} | {duration}"
-
-
-def impact():
-    return [a["impact"] for a in achievements]
-
-
-def reflect():
-    return (
-        "Built strong foundations in DevOps practices, cloud infrastructure, "
-        "and real-world production systems."
-    )
-
-
-
-experience = {
-    "summary": summary(),
-    "technologies": technologies,
-    "achievements": achievements,
-    "reflection": reflect()
-}

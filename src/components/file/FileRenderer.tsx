@@ -64,12 +64,13 @@ function MarkdownImg(props: Record<string, unknown>) {
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const MD_COMPONENTS = {
   code: MarkdownCode,
-  pre: MarkdownPre,
-  a: MarkdownA,
-  img: MarkdownImg,
-}
+  pre:  MarkdownPre,
+  a:    MarkdownA,
+  img:  MarkdownImg,
+} as any
 
 export const FileRenderer = ({
   content,
