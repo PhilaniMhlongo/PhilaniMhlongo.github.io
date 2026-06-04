@@ -1,60 +1,55 @@
-# Philani Mhlongo
+# DevOps & Cloud Engineer · Kubernetes Specialist
 
-## DevOps & Cloud Engineer
+Kubernetes engineer with hands-on production experience managing EKS clusters
+at Old Mutual's OIPA Platform Centre of Excellence. I build reliable,
+cloud-native infrastructure that helps teams ship faster with confidence
+from container orchestration and CI/CD pipelines to cloud operations at
+enterprise scale.
 
-> I’m a DevOps Engineer passionate about building reliable cloud infrastructure, automating workflows, and creating systems that help teams ship faster with confidence. My journey into technology has been driven by curiosity, resilience, and a deep love for engineering scalable platforms.
+## Core Stack
 
-Currently, I’m gaining real-world experience as a DevOps Engineering Intern at Old Mutual, working within enterprise environments focused on platform reliability, cloud operations, automation, and modern infrastructure practices.
-
-My path into DevOps started with self-learning, building projects, and consistently pushing myself to understand how modern systems work behind the scenes — from Linux servers and CI/CD pipelines to Kubernetes clusters and cloud-native architectures.
-
----
-
-## What I Do
-
-- 🚀 **Infrastructure as Code** — Terraform, AWS CloudFormation
-- 🔄 **CI/CD Engineering** — Azure DevOps
-- ☁️ **Cloud Platforms** — AWS, Azure
-- 🐳 **Containers & Orchestration** — Docker, Kubernetes, Helm
-- 📊 **Monitoring & Observability** — Prometheus, Grafana
-- 🐧 **Systems Engineering** — Linux, scripting, automation
+| Domain              | Tools                                      |
+|---------------------|--------------------------------------------|
+| Orchestration       | **Kubernetes (EKS)**, Helm, Docker         |
+| Cloud               | **AWS**, Azure                             |
+| CI/CD               | **Azure DevOps**                           |
+| Infrastructure      | Terraform, AWS CloudFormation              |
+| Monitoring          | Prometheus, Grafana, AWS CloudWatch        |
+| Systems             | Linux, Bash, Python, MSSQL                 |
 
 ---
 
 ## Experience
 
-### Old Mutual — DevOps Engineering Intern
+**Old Mutual — Junior DevOps Engineer Intern** `Oct 2025 – Present`
+Platform / OIPA Centre of Excellence · Durban, ZA
 
-Working within the OMAR OIPA(CoE), contributing to:
-
-- CI/CD pipeline improvements
-- Infrastructure automation
-- Cloud operations and monitoring
-- Troubleshooting production environments
-- Platform reliability and operational efficiency
-
-During this journey, I’ve had the opportunity to learn from experienced engineers, helping me grow both technically and professionally.
+Working in an enterprise Kubernetes environment on AWS EKS, responsible for:
+- Managing and monitoring EKS clusters across dev, staging and production
+- Building and maintaining CI/CD pipelines in Azure DevOps
+- Infrastructure automation and cloud operations on AWS
+- Incident response and platform reliability for the OIPA insurance platform
+- Database operations and maintenance on MSSQL
 
 ---
 
 ## Certifications
 
-- AWS Certified Cloud Practitioner
-- AWS Certified CloudOps Engineer – Associate
+- ✅ AWS Certified Cloud Practitioner
+- ✅ AWS Certified CloudOps Engineer – Associate
 
 ---
 
 ## Philosophy
 
-> "Automate everything repetitive. Version everything important. Build systems that scale beyond yourself."
+> "Automate everything repetitive. Version everything important.
+> Build systems that scale beyond yourself."
 
 ---
 
-## Current Focus
+## Currently Focused On
 
-- Designing scalable cloud infrastructure
-- Kubernetes & cloud-native tooling
-- Platform engineering practices
+- Kubernetes internals and CKA certification
+- Platform engineering at enterprise scale
 - Advanced AWS architecture
-- DevOps automation at enterprise scale
-- Building developer-focused tools and experiences
+- Cloud-native tooling and developer experience

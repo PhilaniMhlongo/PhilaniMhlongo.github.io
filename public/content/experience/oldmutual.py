@@ -7,7 +7,7 @@ Platform / OIPA Centre of Excellence
 
 company  = "Old Mutual"
 team     = "Platform / OIPA Centre of Excellence"
-location = "Johannesburg, ZA"
+location = "Durban, ZA"
 total_xp = "Oct 2025 – Present"
 
 roles = [
