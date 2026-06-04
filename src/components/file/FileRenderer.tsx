@@ -2,6 +2,21 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { CodeBlock } from "../ui/CodeBlock"
 
+const EXT_LANG: Record<string, string> = {
+  py:   "python",
+  ts:   "ts",
+  tsx:  "tsx",
+  js:   "js",
+  jsx:  "jsx",
+  json: "json",
+  yaml: "yaml",
+  yml:  "yml",
+  tf:   "tf",
+  sh:   "bash",
+  bash: "bash",
+  java: "java",
+}
+
 export const FileRenderer = ({
   content,
   extension,
@@ -9,6 +24,7 @@ export const FileRenderer = ({
   content: string
   extension?: string
 }) => {
+  // ── markdown: prose + fenced code blocks ──
   if (extension === "md") {
     return (
       <ReactMarkdown
@@ -16,7 +32,7 @@ export const FileRenderer = ({
         className="prose prose-invert max-w-none"
         components={{
           a: (props) => (
-            <a
+            
               {...props}
               target="_blank"
               rel="noopener noreferrer"
@@ -37,7 +53,10 @@ export const FileRenderer = ({
             className,
             children,
             ...props
-          }: React.HTMLAttributes<HTMLElement> & { inline?: boolean; node?: any }) {
+          }: React.HTMLAttributes<HTMLElement> & {
+            inline?: boolean
+            node?: any
+          }) {
             const match = /language-(\w+)/.exec(className || "")
             return !inline && match ? (
               <CodeBlock
@@ -45,7 +64,10 @@ export const FileRenderer = ({
                 value={String(children).replace(/\n$/, "")}
               />
             ) : (
-              <code className="bg-slate-800 px-1 py-0.5 rounded text-pink-400" {...props}>
+              <code
+                className="bg-slate-800 px-1 py-0.5 rounded text-pink-400"
+                {...props}
+              >
                 {children}
               </code>
             )
@@ -57,6 +79,13 @@ export const FileRenderer = ({
     )
   }
 
+  // ── code/data files: route directly to SyntaxHighlighter ──
+  const lang = extension ? EXT_LANG[extension] : undefined
+  if (lang) {
+    return <CodeBlock language={lang} value={content} />
+  }
+
+  // ── unknown extension: plain fallback ──
   return (
     <pre className="text-sm text-slate-300 whitespace-pre-wrap">
       {content}
