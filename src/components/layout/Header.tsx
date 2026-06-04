@@ -84,23 +84,15 @@ const DEPLOY_CONFIG: Record<
    Helpers
 ────────────────────────────────────────────────────────── */
 
-function formatUptime(
-  seconds: number,
-): string {
-  const d = Math.floor(seconds / 86400)
-
-  const h = Math.floor(
-    (seconds % 86400) / 3600,
-  )
-
-  const m = Math.floor(
-    (seconds % 3600) / 60,
-  )
-
-  return `${d}d ${String(h).padStart(
-    2,
-    "0",
-  )}h ${String(m).padStart(2, "0")}m`
+const CAREER_START = new Date("2025-10-01")
+function getExperience(): string {
+  const now = new Date()
+  const months = (now.getFullYear() - CAREER_START.getFullYear()) * 12 + now.getMonth() - CAREER_START.getMonth()
+  const yrs = Math.floor(months / 12)
+  const mo  = months % 12
+  if (yrs === 0) return `${mo}mo xp`
+  if (mo  === 0) return `${yrs}yr xp`
+  return `${yrs}yr ${mo}mo xp`
 }
 
 
@@ -200,12 +192,12 @@ export const Header = () => {
   }
 
   const [utcTime, setUtcTime] = useState(getSAST())
-  const [uptime, setUptime] = useState(19821600)
+  const [experience, setExperience] = useState(getExperience)
 
   useEffect(() => {
     const id = setInterval(() => {
       setUtcTime(getSAST())
-      setUptime((prev) => prev + 1)
+      setExperience(getExperience())
     }, 1000)
 
     return () => clearInterval(id)
@@ -372,7 +364,7 @@ export const Header = () => {
             flex-shrink-0
           "
         >
-          {/* Uptime */}
+          {/* Experience */}
 
           <div
             className="
@@ -396,7 +388,7 @@ export const Header = () => {
                 text-muted-foreground
               "
             >
-              Uptime
+              Experience
             </span>
 
             <span
@@ -407,7 +399,7 @@ export const Header = () => {
                 tabular-nums
               "
             >
-              {formatUptime(uptime)}
+              {experience}
             </span>
           </div>
 
