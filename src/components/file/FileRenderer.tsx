@@ -17,12 +17,6 @@ const EXT_LANG: Record<string, string> = {
   java: "java",
 }
 
-type CodeProps = React.HTMLAttributes<HTMLElement> & {
-  inline?: boolean
-  node?: unknown
-  children?: React.ReactNode
-}
-
 export const FileRenderer = ({
   content,
   extension,
@@ -36,13 +30,15 @@ export const FileRenderer = ({
         remarkPlugins={[remarkGfm]}
         className="prose prose-invert max-w-none"
         components={{
-          a: (props) => (
+          a: ({ href, children }) => (
             
-              {...props}
+              href={href}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-400 underline hover:text-blue-300"
-            />
+            >
+              {children}
+            </a>
           ),
           img: ({ src, alt }) => (
             <img
@@ -52,9 +48,10 @@ export const FileRenderer = ({
               loading="lazy"
             />
           ),
-          code: ({ inline, className, children }: CodeProps) => {
+          pre: ({ children }) => <>{children}</>,
+          code: ({ className, children }) => {
             const match = /language-(\w+)/.exec(className ?? "")
-            if (!inline && match) {
+            if (match) {
               return (
                 <CodeBlock
                   language={match[1]}
