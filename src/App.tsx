@@ -8,21 +8,112 @@ import { Card } from "./components/ui/Card"
 import { Badge } from "./components/ui/Badge"
 import { getFileIcon } from "./components/file/FileIcon"
 import UniverseBackground from "./components/ui/UniverseBackground"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 import './styles/App.css'
 
 function App() {
   const terminal = useTerminal(fileSystem)
-  
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [isTerminalOpen, setIsTerminalOpen] = useState(true)
+
+  // Parse URL and execute corresponding terminal commands
   useEffect(() => {
+    const path = location.pathname.replace(/^\//, '') // Remove leading slash
+
+    if (!path || path === '/') {
+      // Homepage - show about
       terminal.executeCommand("cat about.md")
-    }, [])
+      return
+    }
+
+    // Parse path like /blog/welcome or /projects/terminal-portfolio/readme.md
+    const segments = path.split('/').filter(Boolean)
+
+    if (segments.length === 0) {
+      terminal.executeCommand("cat about.md")
+      return
+    }
+
+    // Build terminal commands to navigate to the file
+    const commands: string[] = []
+
+    // Navigate to directory if needed
+    if (segments.length > 1) {
+      // cd to the directory (e.g., 'blog', 'projects/terminal-portfolio')
+      for (let i = 0; i < segments.length - 1; i++) {
+        commands.push(`cd ${segments[i]}`)
+      }
+    } else {
+      // Single segment - could be a directory or file in root
+      const item = fileSystem.find(f => f.name === segments[0] || f.name === `${segments[0]}.md`)
+      if (item?.type === 'directory') {
+        commands.push(`cd ${segments[0]}`)
+      }
+    }
+
+    // Get the last segment (could be file name without extension)
+    const lastSegment = segments[segments.length - 1]
+
+    // Try to find a matching file
+    let currentDir = fileSystem
+    for (let i = 0; i < segments.length - 1; i++) {
+      const dir = currentDir.find(f => f.name === segments[i] && f.type === 'directory')
+      if (dir?.children) {
+        currentDir = dir.children
+      }
+    }
+
+    // Look for the file (with or without extension)
+    const file = currentDir.find(f =>
+      f.type === 'file' && (
+        f.name === lastSegment ||
+        f.name === `${lastSegment}.md` ||
+        f.name.replace(/\.[^/.]+$/, '') === lastSegment
+      )
+    )
+
+    if (file) {
+      commands.push(`cat ${file.name}`)
+    }
+
+    // Execute commands sequentially
+    commands.forEach(cmd => terminal.executeCommand(cmd))
+  }, [location.pathname])
+
+  // Update URL when terminal navigation changes
+  useEffect(() => {
+    if (terminal.selectedFile) {
+      // Build URL from current path + selected file
+      const pathSegments = [...terminal.currentPath]
+      const fileName = terminal.selectedFile.name.replace(/\.[^/.]+$/, '') // Remove extension
+      pathSegments.push(fileName)
+
+      const newPath = '/' + pathSegments.join('/')
+      if (location.pathname !== newPath) {
+        navigate(newPath, { replace: true })
+      }
+    } else if (terminal.currentPath.length > 0) {
+      // Just in a directory, no file selected
+      const newPath = '/' + terminal.currentPath.join('/')
+      if (location.pathname !== newPath) {
+        navigate(newPath, { replace: true })
+      }
+    } else if (location.pathname !== '/' && !terminal.selectedFile) {
+      // Back at root with no file
+      // Don't navigate to avoid loops
+    }
+  }, [terminal.selectedFile, terminal.currentPath])
 
   return (
      <div className="relative min-h-screen text-foreground font-sans">
        <UniverseBackground />
-    <div className="relative z-10"></div>
-      <Header />
+    <div className="relative z-10">
+      <Header
+        isTerminalOpen={isTerminalOpen}
+        onTerminalToggle={() => setIsTerminalOpen(!isTerminalOpen)}
+      />
 
       <main className="container mx-auto px-4 py-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-140px)]">
@@ -47,6 +138,7 @@ function App() {
                     onClick={() => {
                       terminal.setSelectedFile(null)
                       terminal.setSelectedFileContent("")
+                      navigate('/', { replace: true })
                     }}
                   >
                     ✕
@@ -63,10 +155,15 @@ function App() {
 
 
             {/* Terminal */}
-            <TerminalPanel terminal={terminal} />
+            <TerminalPanel
+              terminal={terminal}
+              isOpen={isTerminalOpen}
+              onClose={() => setIsTerminalOpen(false)}
+            />
           </div>
         </div>
       </main>
+    </div>
     </div>
   )
 }

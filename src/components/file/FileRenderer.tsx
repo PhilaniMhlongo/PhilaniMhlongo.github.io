@@ -1,6 +1,7 @@
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { CodeBlock } from "../ui/CodeBlock"
+import { ImageLightbox } from "../ui/ImageLightbox"
 
 const EXT_LANG: Record<string, string> = {
   py: "python",
@@ -30,7 +31,7 @@ function MarkdownCode(props: Record<string, unknown>) {
     )
   }
   return (
-    <code className="bg-slate-800 px-1 py-0.5 rounded text-pink-400">
+    <code className="bg-muted border border-border text-text-code px-1 py-0.5 rounded-sm font-medium">
       {children as React.ReactNode}
     </code>
   )
@@ -46,7 +47,7 @@ function MarkdownA(props: Record<string, unknown>) {
       href={props.href as string}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-blue-400 underline hover:text-blue-300"
+      className="text-primary font-medium underline decoration-primary/50 decoration-2 underline-offset-2 hover:text-primary/80 hover:decoration-primary transition-colors"
     >
       {props.children as React.ReactNode}
     </a>
@@ -54,14 +55,10 @@ function MarkdownA(props: Record<string, unknown>) {
 }
 
 function MarkdownImg(props: Record<string, unknown>) {
-  return (
-    <img
-      src={(props.src as string) ?? ""}
-      alt={(props.alt as string) ?? ""}
-      className="rounded-md border border-slate-700 shadow-lg mx-auto my-4 max-w-full object-contain"
-      loading="lazy"
-    />
-  )
+  const src = (props.src as string) ?? ""
+  const alt = (props.alt as string) ?? ""
+
+  return <ImageLightbox src={src} alt={alt} />
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -57,8 +57,13 @@ export const fileSystem: FileSystemItem[] = [
         extension: "md",
         contentPath: "/content/blog/welcome.md",
       },
-
-   
+      {
+        name: "test-with-images.md",
+        type: "file",
+        extension: "md",
+        contentPath: "/content/blog/test-with-images.md",
+        description: "Testing image rendering in markdown",
+      },
     ],
   },
   {

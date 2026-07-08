@@ -40,20 +40,20 @@ const CI_CONFIG: Record<
 > = {
   passing: {
     label: "Passing",
-    textClass: "text-accent",
-    dotClass: "bg-accent",
+    textClass: "text-success",
+    dotClass: "bg-success",
   },
 
   running: {
     label: "Running",
-    textClass: "text-primary",
-    dotClass: "bg-primary animate-pulse",
+    textClass: "text-warning",
+    dotClass: "bg-warning animate-pulse",
   },
 
   failed: {
     label: "Failed",
-    textClass: "text-destructive",
-    dotClass: "bg-destructive",
+    textClass: "text-danger",
+    dotClass: "bg-danger",
   },
 }
 
@@ -63,20 +63,20 @@ const DEPLOY_CONFIG: Record<
 > = {
   active: {
     label: "Active",
-    textClass: "text-accent",
-    dotClass: "bg-accent",
+    textClass: "text-success",
+    dotClass: "bg-success",
   },
 
   deploying: {
     label: "Deploying",
-    textClass: "text-primary",
-    dotClass: "bg-primary animate-pulse",
+    textClass: "text-info",
+    dotClass: "bg-info animate-pulse",
   },
 
   degraded: {
     label: "Degraded",
-    textClass: "text-destructive",
-    dotClass: "bg-destructive",
+    textClass: "text-warning",
+    dotClass: "bg-warning",
   },
 }
 
@@ -183,7 +183,12 @@ const StatusPill = ({
    Header
 ────────────────────────────────────────────────────────── */
 
-export const Header = () => {
+interface HeaderProps {
+  isTerminalOpen: boolean
+  onTerminalToggle: () => void
+}
+
+export const Header = ({ isTerminalOpen, onTerminalToggle }: HeaderProps) => {
   const getSAST = () => {
     return new Date().toLocaleTimeString("en-ZA", {
       hour12: false,
@@ -460,7 +465,8 @@ export const Header = () => {
         >
           {/* Terminal Icon */}
 
-        <motion.div
+        <motion.button
+  onClick={onTerminalToggle}
   initial={{
     opacity: 0,
     y: 8,
@@ -470,6 +476,10 @@ export const Header = () => {
     opacity: 1,
     y: 0,
     scale: 1,
+    borderColor: isTerminalOpen ? "hsl(var(--primary))" : "hsl(var(--border)/0.7)",
+    boxShadow: isTerminalOpen
+      ? `0 0 0 1px rgba(47,129,247,0.25), 0 4px 12px rgba(47,129,247,0.12)`
+      : "none",
   }}
   whileHover={{
     scale: 1.06,
@@ -509,13 +519,14 @@ export const Header = () => {
     rounded-xl
 
     border
-    border-border/70
 
     bg-card/80
     backdrop-blur-md
 
     overflow-hidden
+    cursor-pointer
   "
+  title={isTerminalOpen ? "Close Terminal" : "Open Terminal"}
 >
   {/* Glow Layer */}
   <motion.div
@@ -536,14 +547,15 @@ export const Header = () => {
 
   {/* Icon */}
   <Terminal
-    className="
+    className={`
       relative
       z-10
       size-5
-      text-primary
-    "
+      transition-colors
+      ${isTerminalOpen ? 'text-primary' : 'text-muted-foreground'}
+    `}
   />
-</motion.div>
+</motion.button>
 
           {/* Identity */}
 

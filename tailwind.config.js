@@ -9,10 +9,37 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+
+        /* Primary System */
         primary: {
           DEFAULT: "hsl(var(--primary))",
+          hover: "hsl(var(--primary-hover))",
           foreground: "hsl(var(--primary-foreground))",
         },
+
+        /* Semantic Colors */
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          hover: "hsl(var(--success-hover))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          hover: "hsl(var(--warning-hover))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        danger: {
+          DEFAULT: "hsl(var(--danger))",
+          hover: "hsl(var(--danger-hover))",
+          foreground: "hsl(var(--danger-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          hover: "hsl(var(--info-hover))",
+          foreground: "hsl(var(--info-foreground))",
+        },
+
+        /* Legacy/Utility */
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
@@ -27,6 +54,7 @@ export default {
         },
         accent: {
           DEFAULT: "hsl(var(--accent))",
+          secondary: "hsl(var(--accent-secondary))",
           foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
@@ -39,7 +67,19 @@ export default {
         },
         surface: {
           elevated: "hsl(var(--surface-elevated))",
+          hover: "hsl(var(--surface-hover))",
         },
+
+        /* Text Hierarchy */
+        text: {
+          primary: "hsl(var(--text-primary))",
+          secondary: "hsl(var(--text-secondary))",
+          tertiary: "hsl(var(--text-tertiary))",
+          link: "hsl(var(--text-link))",
+          code: "hsl(var(--text-code))",
+        },
+
+        /* Terminal Theme (legacy) */
         terminal: {
           bg: "#0D1117",
           surface: "#161B22",
@@ -51,9 +91,10 @@ export default {
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
+        lg: "var(--radius-lg)",
+        DEFAULT: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        sm: "var(--radius-sm)",
       },
       fontFamily: {
         sans: [
