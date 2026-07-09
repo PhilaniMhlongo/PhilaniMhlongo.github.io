@@ -64,6 +64,13 @@ export const fileSystem: FileSystemItem[] = [
         contentPath: "/content/blog/test-with-images.md",
         description: "Testing image rendering in markdown",
       },
+      {
+        name: "markdown-features.md",
+        type: "file",
+        extension: "md",
+        contentPath: "/content/blog/markdown-features.md",
+        description: "Complete guide to all markdown features",
+      },
     ],
   },
   {
