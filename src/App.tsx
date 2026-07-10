@@ -148,6 +148,7 @@ function App() {
                   <FileRenderer
                     content={terminal.selectedFileContent}
                     extension={terminal.selectedFile.extension}
+                    fileName={terminal.selectedFile.name}
                   />
                 </div>
               </Card>
