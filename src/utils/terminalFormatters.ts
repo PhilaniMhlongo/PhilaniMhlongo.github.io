@@ -68,6 +68,7 @@ export function formatBlogListings(posts: BlogPost[], title?: string): string[] 
   output.push('  blog --recent <n>     Show N recent posts');
   output.push('  blog --featured       Show featured posts only');
   output.push('  search <query>        Search blog posts');
+  output.push('  subscribe <email>     Get notified about new posts');
 
   return output;
 }
@@ -123,6 +124,7 @@ export function formatFeaturedPosts(posts: BlogPost[]): string[] {
 
   output.push('');
   output.push('Type "blog" to see all posts or "cat blog/<filename>" to read');
+  output.push('Type "subscribe <email>" to get notified about new posts');
 
   return output;
 }

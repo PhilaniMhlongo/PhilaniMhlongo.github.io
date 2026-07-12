@@ -169,5 +169,6 @@ export function getPostById(posts: BlogPost[], id: string): BlogPost | undefined
  * Get post by filename (without extension)
  */
 export function getPostByFileName(posts: BlogPost[], fileName: string): BlogPost | undefined {
-  return posts.find(post => post.fileName === fileName);
+  const normalized = fileName.replace(/\.md$/, '');
+  return posts.find(post => post.fileName.replace(/\.md$/, '') === normalized);
 }

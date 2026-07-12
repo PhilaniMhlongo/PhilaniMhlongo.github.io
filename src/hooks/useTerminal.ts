@@ -17,6 +17,7 @@ import {
   formatTagsList,
   parseCommandFlags
 } from "../utils/terminalFormatters"
+import { isValidEmail, subscribeToNewsletter } from "../utils/newsletter"
 import type { FileSystemItem } from "../context/FileSystemContext"
 
 export const useTerminal = (fileSystem: FileSystemItem[]) => {
@@ -43,7 +44,7 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
             ""
           ])
         }
-      } catch (error) {
+      } catch {
         // Silently fail if metadata not available
       }
     }
@@ -53,13 +54,37 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
   const terminalRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // Command history for ↑/↓ recall. index === -1 means "not navigating".
+  const commandHistoryRef = useRef<{ items: string[]; index: number }>({ items: [], index: -1 })
+
+  const navigateHistory = (direction: "up" | "down") => {
+    const history = commandHistoryRef.current
+    if (history.items.length === 0) return
+
+    if (direction === "up") {
+      history.index = history.index === -1
+        ? history.items.length - 1
+        : Math.max(0, history.index - 1)
+      setCurrentCommand(history.items[history.index])
+    } else {
+      if (history.index === -1) return
+      history.index += 1
+      if (history.index >= history.items.length) {
+        history.index = -1
+        setCurrentCommand("")
+      } else {
+        setCurrentCommand(history.items[history.index])
+      }
+    }
+  }
+
   const handleTabAutocomplete = () => {
     const [cmd, ...args] = currentCommand.split(" ")
     const partial = args.join("")
 
   const matches = getCurrentDirectory()
     .map(i => i.name)
-    .filter(name => name.startsWith(partial))
+    .filter(name => name.toLowerCase().startsWith(partial.toLowerCase()))
 
   if (matches.length === 1) {
     setCurrentCommand(`${cmd} ${matches[0]}`)
@@ -69,21 +94,60 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
   }
 }
 
- 
-  const getCurrentDirectory = () => {
+  const getDirectoryAt = (path: string[]): FileSystemItem[] | null => {
     let current = fileSystem
-    for (const segment of currentPath) {
-      const found = current.find(i => i.name === segment && i.type === "directory")
-      if (!found || !found.children) return []
+    for (const segment of path) {
+      const found = current.find(
+        i => i.name.toLowerCase() === segment.toLowerCase() && i.type === "directory"
+      )
+      if (!found || !found.children) return null
       current = found.children
     }
     return current
   }
 
+  const getCurrentDirectory = () => getDirectoryAt(currentPath) ?? []
+
+  // Resolve a path argument like "welcome.md", "blog/welcome.md",
+  // "../about.md" or "/blog/welcome.md" into a directory path + item name.
+  const resolvePath = (arg: string): { dirPath: string[]; name: string } | null => {
+    const segments = arg.split("/").filter(s => s.length > 0 && s !== ".")
+    if (segments.length === 0) return null
+
+    const name = segments.pop()!
+    const dirPath = arg.startsWith("/") ? [] : [...currentPath]
+
+    for (const segment of segments) {
+      if (segment === "..") {
+        dirPath.pop()
+        continue
+      }
+      const dir = getDirectoryAt(dirPath)
+      const found = dir?.find(
+        i => i.type === "directory" && i.name.toLowerCase() === segment.toLowerCase()
+      )
+      if (!found) return null
+      dirPath.push(found.name)
+    }
+
+    return { dirPath, name }
+  }
+
   const executeCommand = async (cmd: string) => {
-    const lowerCmd = cmd.trim().toLowerCase()
-    const [command, ...args] = lowerCmd.split(" ")
+    const trimmed = cmd.trim()
+    // Only the command word is case-insensitive; arguments (file names,
+    // search queries, email addresses) keep their original casing.
+    const [rawCommand, ...args] = trimmed.split(/\s+/)
+    const command = (rawCommand ?? "").toLowerCase()
     let output: string[] = []
+
+    if (trimmed) {
+      const history = commandHistoryRef.current
+      if (history.items[history.items.length - 1] !== trimmed) {
+        history.items.push(trimmed)
+      }
+      history.index = -1
+    }
 
     setSelectedFile(null)
     setSelectedFileContent("")
@@ -98,7 +162,7 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
           "Navigation:",
           "  ls              List files/directories",
           "  cd <dir>        Change directory",
-          "  cat <file>      View file content",
+          "  cat <file>      View file content (paths work too, e.g. cat blog/welcome.md)",
           "  pwd             Print working directory",
           "",
           "Blog:",
@@ -109,6 +173,9 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
           "  blog --tags     List all tags",
           "  search <query>  Search blog posts",
           "",
+          "Newsletter:",
+          "  subscribe <email>  Get notified when new content is published",
+          "",
           "Other:",
           "  whoami          About me",
           "  clear           Clear terminal",
@@ -117,34 +184,67 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
       case "ls":
         output = dir.map(i => `${i.type === "directory" ? "📁" : "📄"} ${i.name}`)
         break
-      case "cd":
-        if (!args.length) setCurrentPath([])
-        else if (args[0] === "..") setCurrentPath(prev => prev.slice(0, -1))
-        else {
-          const target = dir.find(d => d.name === args[0] && d.type === "directory")
-          if (target) setCurrentPath(prev => [...prev, args[0]])
-          else output = [`Directory not found: ${args[0]}`]
+      case "cd": {
+        if (!args.length) {
+          setCurrentPath([])
+          break
         }
+        const segments = args[0].split("/").filter(s => s.length > 0 && s !== ".")
+        const newPath = args[0].startsWith("/") ? [] : [...currentPath]
+        let failed: string | null = null
+
+        for (const segment of segments) {
+          if (segment === "..") {
+            newPath.pop()
+            continue
+          }
+          const dirItems = getDirectoryAt(newPath)
+          const found = dirItems?.find(
+            i => i.type === "directory" && i.name.toLowerCase() === segment.toLowerCase()
+          )
+          if (!found) {
+            failed = segment
+            break
+          }
+          newPath.push(found.name)
+        }
+
+        if (failed) output = [`Directory not found: ${failed}`]
+        else setCurrentPath(newPath)
         break
-      case "cat":
-        const file = dir.find(f => f.name === args[0] && f.type === "file")
-        if (file) {
+      }
+      case "cat": {
+        if (!args.length) {
+          output = ["Usage: cat <file>"]
+          break
+        }
+        const resolved = resolvePath(args[0])
+        const targetDir = resolved ? getDirectoryAt(resolved.dirPath) : null
+        const file = targetDir?.find(
+          f => f.type === "file" && f.name.toLowerCase() === resolved!.name.toLowerCase()
+        )
+        if (file && resolved) {
+          // Keep the explorer and URL in sync when opening via a path
+          if (resolved.dirPath.join("/") !== currentPath.join("/")) {
+            setCurrentPath(resolved.dirPath)
+          }
           setSelectedFile(file)
           const content = await getFileContent(file)
           setSelectedFileContent(content)
 
           // Calculate and show reading time for blog posts
-          const isBlogPost = currentPath.includes("blog") && file.extension === "md"
+          const isBlogPost = resolved.dirPath.includes("blog") && file.extension === "md"
           if (isBlogPost) {
             const readingTime = calculateReadingTime(content)
-            output = [`📄 Opening ${args[0]} (${readingTime})...`]
+            output = [`📄 Opening ${file.name} (${readingTime})...`]
           } else {
-            output = [`Opening ${args[0]}...`]
+            output = [`Opening ${file.name}...`]
           }
         } else {
           output = [`File not found: ${args[0]}`]
         }
         break
+      }
       case "pwd":
         output = [`/${currentPath.join("/")}`]
         break
@@ -161,10 +261,34 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
           if (featured.length > 0) {
             output.push(...formatFeaturedPosts(featured))
           }
-        } catch (error) {
+        } catch {
           // Silently fail if metadata not available
         }
         break
+
+      case "subscribe": {
+        const email = args[0]
+        if (!email) {
+          output = [
+            "Usage: subscribe <your-email>",
+            "",
+            "Example:",
+            "  subscribe jane@example.com",
+            "",
+            "You'll get an email whenever new content is published.",
+          ]
+          break
+        }
+        if (!isValidEmail(email)) {
+          output = [
+            `Invalid email address: ${email}`,
+            "Usage: subscribe <your-email>",
+          ]
+          break
+        }
+        output = await subscribeToNewsletter(email)
+        break
+      }
 
       case "blog":
         try {
@@ -268,9 +392,8 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
     getCurrentDirectory,
     setSelectedFile,
     setSelectedFileContent,
-    handleTabAutocomplete, 
+    handleTabAutocomplete,
+    navigateHistory,
     autocompleteSuggestions
-    
   }
 }
-

@@ -32,6 +32,7 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
             }}
             className="w-3 h-3 bg-red-500 rounded-full hover:bg-red-600 transition-colors flex items-center justify-center group"
             title="Close"
+            aria-label="Close terminal"
           >
             <X className="w-2 h-2 text-red-900 opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
@@ -42,6 +43,7 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
             }}
             className="w-3 h-3 bg-yellow-500 rounded-full hover:bg-yellow-600 transition-colors flex items-center justify-center group"
             title="Minimize"
+            aria-label="Minimize terminal"
           >
             <Minimize2 className="w-2 h-2 text-yellow-900 opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
@@ -52,6 +54,7 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
             }}
             className="w-3 h-3 bg-green-500 rounded-full hover:bg-green-600 transition-colors flex items-center justify-center group"
             title="Maximize"
+            aria-label="Maximize terminal"
           >
             <Maximize2 className="w-2 h-2 text-green-900 opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
@@ -109,8 +112,15 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
   } else if (e.key === "Tab") {
     e.preventDefault()
     terminal.handleTabAutocomplete()
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault()
+    terminal.navigateHistory("up")
+  } else if (e.key === "ArrowDown") {
+    e.preventDefault()
+    terminal.navigateHistory("down")
   }
 }}
+          aria-label="Terminal command input"
 
           className="flex-1 bg-transparent outline-none text-white"
           placeholder="Type a command..."

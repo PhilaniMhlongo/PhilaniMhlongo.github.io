@@ -113,7 +113,7 @@ function MarkdownBlockquote(props: Record<string, unknown>) {
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const MD_COMPONENTS = {
   code: MarkdownCode,
   pre:  MarkdownPre,
@@ -121,6 +121,7 @@ const MD_COMPONENTS = {
   img:  MarkdownImg,
   blockquote: MarkdownBlockquote,
 } as any
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export const FileRenderer = ({
   content,
