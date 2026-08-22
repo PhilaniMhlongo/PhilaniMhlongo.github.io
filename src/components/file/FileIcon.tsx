@@ -1,61 +1,32 @@
-import {
-  Folder,
-  File,
-  Code,
-  Database,
-  Settings,
-} from "lucide-react"
+import { Folder, FileText, FileCode, FileJson, FileCog } from "lucide-react"
 
 import type { FileSystemItem } from "../../context/FileSystemContext"
 
+/**
+ * Icons are shape-coded, not colour-coded: the file type reads from the
+ * glyph while colour stays reserved for state (selection, hover).
+ */
 export const getFileIcon = (file: FileSystemItem) => {
-  const baseClass =
-    "w-4 h-4 flex-shrink-0"
+  const cls = "size-3.5 shrink-0 text-text-tertiary"
+  const stroke = 1.75
 
   if (file.type === "directory") {
-    return (
-      <Folder
-        className={`${baseClass} text-primary`}
-      />
-    )
+    return <Folder className={cls} strokeWidth={stroke} />
   }
 
   switch (file.extension) {
     case "py":
-      return (
-        <Code
-          className={`${baseClass} text-primary`}
-        />
-      )
-
+    case "ts":
+    case "tsx":
+    case "js":
+      return <FileCode className={cls} strokeWidth={stroke} />
     case "json":
-      return (
-        <Database
-          className={`${baseClass} text-accent`}
-        />
-      )
-
-    case "md":
-      return (
-        <File
-          className={`${baseClass} text-slate-300`}
-        />
-      )
-
+      return <FileJson className={cls} strokeWidth={stroke} />
     case "tf":
     case "yaml":
     case "yml":
-      return (
-        <Settings
-          className={`${baseClass} text-foreground`}
-        />
-      )
-
+      return <FileCog className={cls} strokeWidth={stroke} />
     default:
-      return (
-        <File
-          className={`${baseClass} text-muted-foreground`}
-        />
-      )
+      return <FileText className={cls} strokeWidth={stroke} />
   }
 }

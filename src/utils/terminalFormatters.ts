@@ -1,32 +1,36 @@
 import type { BlogPost } from '@/types/blog';
 import { formatDateShort } from './blogUtils';
 
+const RULE = '─'.repeat(52);
+
+/**
+ * Section header: an uppercase label over a hairline rule.
+ * Quieter and better aligned than boxed ASCII art.
+ */
+function sectionHeader(title: string): string[] {
+  return ['', title.toUpperCase(), RULE, ''];
+}
+
 /**
  * Format a single blog post for terminal display
  */
 export function formatBlogPostListing(post: BlogPost, index: number): string[] {
   const output: string[] = [];
 
-  // Separator for readability (except for first post)
-  if (index > 0) {
-    output.push('─────────────────────────────────────────');
-  }
+  if (index > 0) output.push('');
 
-  // Title with star if featured
-  const featuredMark = post.featured ? ' ⭐' : '';
-  output.push(`${featuredMark} ${post.title}`.trim());
-
-  // Subtitle
+  // Featured posts carry a single trailing marker rather than an emoji
+  output.push(`${post.title}${post.featured ? '  ·  featured' : ''}`);
   output.push(`  ${post.subtitle}`);
 
-  // Metadata line
-  const date = formatDateShort(post.publishedDate);
-  const tags = post.tags.slice(0, 3).join(', '); // Show max 3 tags
-  const moreTags = post.tags.length > 3 ? ` +${post.tags.length - 3}` : '';
-  output.push(`  📅 ${date}  |  ⏱️  ${post.readingTime}  |  🏷️  ${tags}${moreTags}`);
-
-  // Command to read
-  output.push(`  $ cat blog/${post.fileName}`);
+  const meta = [
+    formatDateShort(post.publishedDate),
+    post.readingTime,
+    post.tags.slice(0, 3).join(', ') +
+      (post.tags.length > 3 ? ` +${post.tags.length - 3}` : ''),
+  ].join('  ·  ');
+  output.push(`  ${meta}`);
+  output.push(`  cat blog/${post.fileName}`);
 
   return output;
 }
@@ -37,38 +41,25 @@ export function formatBlogPostListing(post: BlogPost, index: number): string[] {
 export function formatBlogListings(posts: BlogPost[], title?: string): string[] {
   const output: string[] = [];
 
-  // Header
-  if (title) {
-    output.push('');
-    output.push(`╔${'═'.repeat(65)}╗`);
-    output.push(`║  ${title.padEnd(63)}║`);
-    output.push(`╚${'═'.repeat(65)}╝`);
-    output.push('');
-  }
+  if (title) output.push(...sectionHeader(title));
 
   if (posts.length === 0) {
-    output.push('No blog posts found.');
+    output.push('No posts found.');
     return output;
   }
 
-  // Posts
   posts.forEach((post, index) => {
     output.push(...formatBlogPostListing(post, index));
   });
 
-  // Footer
   output.push('');
-  output.push('─────────────────────────────────────────');
-  output.push(`Total: ${posts.length} post${posts.length !== 1 ? 's' : ''}`);
+  output.push(RULE);
+  output.push(`${posts.length} post${posts.length !== 1 ? 's' : ''}`);
   output.push('');
-
-  // Commands help
-  output.push('💡 Tips:');
-  output.push('  blog --tag <tag>      Filter by tag');
-  output.push('  blog --recent <n>     Show N recent posts');
-  output.push('  blog --featured       Show featured posts only');
-  output.push('  search <query>        Search blog posts');
-  output.push('  subscribe <email>     Get notified about new posts');
+  output.push('blog --tag <tag>     filter by tag');
+  output.push('blog --recent <n>    n most recent');
+  output.push('search <query>       search posts');
+  output.push('subscribe <email>    get notified about new posts');
 
   return output;
 }
@@ -79,17 +70,12 @@ export function formatBlogListings(posts: BlogPost[], title?: string): string[] 
 export function formatSearchResults(posts: BlogPost[], query: string): string[] {
   const output: string[] = [];
 
-  output.push('');
-  output.push(`🔍 Search results for: "${query}"`);
-  output.push('');
+  output.push(...sectionHeader(`results for "${query}"`));
 
   if (posts.length === 0) {
-    output.push('No results found.');
+    output.push('No matches.');
     output.push('');
-    output.push('💡 Try:');
-    output.push('  - Different keywords');
-    output.push('  - Broader search terms');
-    output.push('  - Tag names (kubernetes, docker, terraform)');
+    output.push('Try broader keywords, or `blog --tags` to see every tag.');
     return output;
   }
 
@@ -98,8 +84,8 @@ export function formatSearchResults(posts: BlogPost[], query: string): string[] 
   });
 
   output.push('');
-  output.push('─────────────────────────────────────────');
-  output.push(`Found ${posts.length} result${posts.length !== 1 ? 's' : ''}`);
+  output.push(RULE);
+  output.push(`${posts.length} result${posts.length !== 1 ? 's' : ''}`);
 
   return output;
 }
@@ -108,23 +94,18 @@ export function formatSearchResults(posts: BlogPost[], query: string): string[] 
  * Format featured posts for welcome/showcase
  */
 export function formatFeaturedPosts(posts: BlogPost[]): string[] {
-  const output: string[] = [];
+  if (posts.length === 0) return [];
 
-  if (posts.length === 0) {
-    return output;
-  }
-
-  output.push('');
-  output.push('📌 Featured Posts:');
+  const output: string[] = ['', 'Featured writing'];
 
   posts.slice(0, 3).forEach((post) => {
-    const date = formatDateShort(post.publishedDate);
-    output.push(`   • ${post.title} (${date}) - ${post.readingTime}`);
+    output.push(
+      `  ${post.title}  ·  ${formatDateShort(post.publishedDate)}  ·  ${post.readingTime}`
+    );
   });
 
   output.push('');
-  output.push('Type "blog" to see all posts or "cat blog/<filename>" to read');
-  output.push('Type "subscribe <email>" to get notified about new posts');
+  output.push('`blog` lists everything  ·  `subscribe <email>` for new posts');
 
   return output;
 }
@@ -135,11 +116,8 @@ export function formatFeaturedPosts(posts: BlogPost[]): string[] {
 export function formatTagsList(tags: string[]): string[] {
   const output: string[] = [];
 
-  output.push('');
-  output.push('🏷️  Available Tags:');
-  output.push('');
+  output.push(...sectionHeader('tags'));
 
-  // Display in columns
   const columns = 3;
   const perColumn = Math.ceil(tags.length / columns);
 
@@ -147,15 +125,13 @@ export function formatTagsList(tags: string[]): string[] {
     const row: string[] = [];
     for (let col = 0; col < columns; col++) {
       const index = i + col * perColumn;
-      if (index < tags.length) {
-        row.push(tags[index].padEnd(20));
-      }
+      if (index < tags.length) row.push(tags[index].padEnd(18));
     }
-    output.push(`  ${row.join('')}`);
+    output.push(row.join('').trimEnd());
   }
 
   output.push('');
-  output.push('💡 Filter by tag: blog --tag <tagname>');
+  output.push('blog --tag <tag>     filter by tag');
 
   return output;
 }

@@ -79,29 +79,17 @@ function MarkdownBlockquote(props: Record<string, unknown>) {
 
   if (match) {
     const type = match[1].toLowerCase()
-    const containerClasses: Record<string, string> = {
-      note: "border-blue-500 bg-blue-500/10",
-      info: "border-blue-500 bg-blue-500/10",
-      tip: "border-green-500 bg-green-500/10",
-      important: "border-purple-500 bg-purple-500/10",
-      warning: "border-yellow-500 bg-yellow-500/10",
-    }
-    const iconClasses: Record<string, string> = {
-      note: "text-blue-500",
-      info: "text-blue-500",
-      tip: "text-green-500",
-      important: "text-purple-500",
-      warning: "text-yellow-500",
-    }
+    // Callouts are distinguished by their label, not by a colour each. Only
+    // warnings — a genuine state — take a tinted rule.
+    const accentClass =
+      type === "warning" ? "border-warning" : "border-border-strong"
 
     return (
-      <div className={`my-4 p-4 border-l-4 rounded-r ${containerClasses[type]}`}>
-        <div className={`font-bold mb-2 ${iconClasses[type]} uppercase text-sm`}>
+      <div className={`my-6 border-l-2 pl-5 ${accentClass}`}>
+        <div className="mb-1.5 font-mono text-2xs uppercase tracking-label text-text-tertiary">
           {type}
         </div>
-        <div className="prose-p:my-2">
-          {children}
-        </div>
+        <div className="prose-p:my-2">{children}</div>
       </div>
     )
   }
@@ -179,7 +167,7 @@ export const FileRenderer = ({
   }
 
   return (
-    <pre className="text-sm text-slate-300 whitespace-pre-wrap">
+    <pre className="whitespace-pre-wrap font-mono text-[0.8125rem] leading-relaxed text-text-secondary">
       {content}
     </pre>
   )

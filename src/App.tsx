@@ -3,20 +3,16 @@ import { useTerminal } from "./hooks/useTerminal"
 import { Header } from "./components/layout/Header"
 import { FileExplorer } from "./components/layout/FileExplorer"
 import { TerminalPanel } from "./components/layout/TerminalPanel"
-import { Card } from "./components/ui/Card"
-import { Badge } from "./components/ui/Badge"
 import { getFileIcon } from "./components/file/FileIcon"
 import { Maximize2, Minimize2, X } from "lucide-react"
 import { lazy, Suspense, useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import './styles/App.css'
 
-// Loaded lazily so the markdown/KaTeX/syntax-highlighting stack and the
-// particles animation stay out of the initial bundle.
+// Loaded lazily so the markdown/KaTeX/syntax-highlighting stack stays out of
+// the initial bundle.
 const FileRenderer = lazy(() =>
   import("./components/file/FileRenderer").then(m => ({ default: m.FileRenderer }))
 )
-const UniverseBackground = lazy(() => import("./components/ui/UniverseBackground"))
 
 function App() {
   const terminal = useTerminal(fileSystem)
@@ -67,9 +63,8 @@ function App() {
   // Update URL when terminal navigation changes
   useEffect(() => {
     if (terminal.selectedFile) {
-      // Build URL from current path + selected file
       const pathSegments = [...terminal.currentPath]
-      const fileName = terminal.selectedFile.name.replace(/\.[^/.]+$/, '') // Remove extension
+      const fileName = terminal.selectedFile.name.replace(/\.[^/.]+$/, '')
       pathSegments.push(fileName)
 
       const newPath = '/' + pathSegments.join('/')
@@ -78,7 +73,6 @@ function App() {
         navigate(newPath, { replace: true })
       }
     } else if (terminal.currentPath.length > 0) {
-      // Just in a directory, no file selected
       const newPath = '/' + terminal.currentPath.join('/')
       if (location.pathname !== newPath) {
         syncedPathRef.current = newPath
@@ -113,76 +107,86 @@ function App() {
     navigate('/', { replace: true })
   }
 
+  const viewerButton =
+    "flex size-7 items-center justify-center rounded-sm text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary"
+
   return (
-     <div className="relative min-h-screen text-foreground font-sans">
-       <Suspense fallback={null}>
-         <UniverseBackground />
-       </Suspense>
-    <div className="relative z-10">
+    <div className="min-h-screen">
       <Header
         isTerminalOpen={isTerminalOpen}
         onTerminalToggle={() => setIsTerminalOpen(!isTerminalOpen)}
       />
 
-      <main className="container mx-auto px-4 py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-140px)]">
-          {/* File Explorer */}
-          <FileExplorer terminal={terminal} />
+      <main className="mx-auto max-w-[1400px] px-6 py-6">
+        {/* Mobile scrolls naturally; the viewport-locked split is a
+            large-screen affordance. */}
+        <div className="grid grid-cols-1 gap-5 lg:h-[calc(100vh-9.5rem)] lg:grid-cols-[260px_minmax(0,1fr)]">
+          <div className="max-h-64 lg:max-h-none">
+            <FileExplorer terminal={terminal} />
+          </div>
 
-          {/* File Viewer + Terminal */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Selected file viewer */}
+          <div className="flex min-h-0 flex-col gap-5">
             {terminal.selectedFile && (
               <>
                 {isViewerFullscreen && (
                   <div
-                    className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm"
+                    className="fixed inset-0 z-40 bg-background/70 backdrop-blur-sm"
                     onClick={() => setIsViewerFullscreen(false)}
                     aria-hidden
                   />
                 )}
-                <Card
+                <article
                   className={
                     isViewerFullscreen
-                      ? "fixed inset-2 md:inset-6 z-50 flex flex-col bg-card border border-border rounded-md overflow-hidden shadow-panel"
-                      : "bg-card border border-border backdrop rounded-md overflow-hidden shadow-panel"
+                      ? "fixed inset-3 z-50 flex flex-col overflow-hidden rounded border border-border bg-surface md:inset-8"
+                      : "flex min-h-0 flex-col overflow-hidden rounded border border-border bg-surface"
                   }
                 >
-                  <div className="px-4 py-3 border-b border-border bg-surface-elevated flex items-center justify-between">
-                    <div className="flex items-center gap-2 min-w-0">
-                      {getFileIcon(terminal.selectedFile)}
-                      <span className="font-medium text-sm text-foreground truncate">{terminal.selectedFile.name}</span>
-                      <Badge variant="secondary" className="text-[11px] font-mono rounded-sm">
-                        {terminal.selectedFile.extension}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2 border-b border-border bg-surface-elevated px-3 py-2">
+                    {getFileIcon(terminal.selectedFile)}
+                    <span className="truncate font-mono text-2xs text-text-secondary">
+                      {terminal.selectedFile.name}
+                    </span>
+
+                    <div className="ml-auto flex items-center gap-0.5">
                       <button
-                        className="flex items-center justify-center size-7 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        className={viewerButton}
                         aria-label={isViewerFullscreen ? "Exit full screen" : "View full screen"}
                         title={isViewerFullscreen ? "Exit full screen (Esc)" : "View full screen"}
                         onClick={() => setIsViewerFullscreen(v => !v)}
                       >
-                        {isViewerFullscreen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
+                        {isViewerFullscreen ? (
+                          <Minimize2 className="size-3.5" strokeWidth={1.75} />
+                        ) : (
+                          <Maximize2 className="size-3.5" strokeWidth={1.75} />
+                        )}
                       </button>
                       <button
-                        className="flex items-center justify-center size-7 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        className={viewerButton}
                         aria-label="Close file"
+                        title="Close file"
                         onClick={closeFile}
                       >
-                        <X className="size-4" />
+                        <X className="size-3.5" strokeWidth={1.75} />
                       </button>
                     </div>
                   </div>
+
                   <div
                     className={
                       isViewerFullscreen
-                        ? "flex-1 overflow-y-auto px-5 py-6 md:px-8"
-                        : "px-5 py-4 max-h-[420px] overflow-y-auto"
+                        ? "flex-1 overflow-y-auto px-6 py-10 md:px-10"
+                        : "max-h-[26rem] overflow-y-auto px-6 py-6"
                     }
                   >
-                    <div className={isViewerFullscreen ? "max-w-3xl mx-auto" : undefined}>
-                      <Suspense fallback={<div className="text-sm text-muted-foreground font-mono">Loading…</div>}>
+                    <div className={isViewerFullscreen ? "mx-auto max-w-[68ch]" : undefined}>
+                      <Suspense
+                        fallback={
+                          <div className="font-mono text-2xs text-text-tertiary">
+                            loading…
+                          </div>
+                        }
+                      >
                         <FileRenderer
                           content={terminal.selectedFileContent}
                           extension={terminal.selectedFile.extension}
@@ -191,12 +195,10 @@ function App() {
                       </Suspense>
                     </div>
                   </div>
-                </Card>
+                </article>
               </>
             )}
 
-
-            {/* Terminal */}
             <TerminalPanel
               terminal={terminal}
               isOpen={isTerminalOpen}
@@ -205,7 +207,6 @@ function App() {
           </div>
         </div>
       </main>
-    </div>
     </div>
   )
 }

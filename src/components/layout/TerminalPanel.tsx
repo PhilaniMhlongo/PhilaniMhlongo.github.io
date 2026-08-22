@@ -1,9 +1,6 @@
-import { Minimize2, Maximize2, X } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "../ui/Button"
-import { Card } from "../ui/Card"
-import { useTerminal } from "../../hooks/useTerminal"
+import { Minus, Maximize2, Minimize2, X } from "lucide-react"
 import { useState } from "react"
+import { useTerminal } from "../../hooks/useTerminal"
 
 type ReturnTypeOfUseTerminal = ReturnType<typeof useTerminal>
 
@@ -13,133 +10,138 @@ interface Props {
   onClose?: () => void
 }
 
+const ChromeButton = ({
+  onClick,
+  label,
+  children,
+}: {
+  onClick: () => void
+  label: string
+  children: React.ReactNode
+}) => (
+  <button
+    onClick={onClick}
+    aria-label={label}
+    title={label}
+    className="flex size-6 items-center justify-center rounded-sm text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary"
+  >
+    {children}
+  </button>
+)
+
 export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
   const [isMinimized, setIsMinimized] = useState(false)
   const [isMaximized, setIsMaximized] = useState(false)
 
-  if (!isOpen) {
-    return null
-  }
+  if (!isOpen) return null
 
   return (
-  <Card className={`bg-slate-900/80 border-slate-700 backdrop-blur-sm ${isMaximized ? 'fixed inset-4 z-50' : ''}`}>
-    <div className="p-3 border-b border-slate-700 flex items-center justify-between">
-      <div className="flex items-center space-x-2">
-        <div className="flex space-x-1.5">
-          <button
-            onClick={() => {
-              if (onClose) onClose()
-            }}
-            className="w-3 h-3 bg-red-500 rounded-full hover:bg-red-600 transition-colors flex items-center justify-center group"
-            title="Close"
-            aria-label="Close terminal"
-          >
-            <X className="w-2 h-2 text-red-900 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-          <button
+    <section
+      className={`flex flex-col overflow-hidden rounded border border-border bg-surface ${
+        isMaximized ? "fixed inset-4 z-50" : ""
+      }`}
+      aria-label="Terminal"
+    >
+      <div className="flex items-center gap-2 border-b border-border bg-surface-elevated px-3 py-2">
+        <span className="font-mono text-2xs uppercase tracking-label text-text-tertiary">
+          terminal
+        </span>
+        <span className="font-mono text-2xs text-text-tertiary">
+          — ~/{terminal.currentPath.join("/")}
+        </span>
+
+        <div className="ml-auto flex items-center gap-0.5">
+          <ChromeButton
+            label={isMinimized ? "Expand terminal" : "Collapse terminal"}
             onClick={() => {
               setIsMinimized(!isMinimized)
               setIsMaximized(false)
             }}
-            className="w-3 h-3 bg-yellow-500 rounded-full hover:bg-yellow-600 transition-colors flex items-center justify-center group"
-            title="Minimize"
-            aria-label="Minimize terminal"
           >
-            <Minimize2 className="w-2 h-2 text-yellow-900 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-          <button
+            <Minus className="size-3.5" strokeWidth={1.75} />
+          </ChromeButton>
+          <ChromeButton
+            label={isMaximized ? "Restore terminal" : "Maximize terminal"}
             onClick={() => {
               setIsMaximized(!isMaximized)
               setIsMinimized(false)
             }}
-            className="w-3 h-3 bg-green-500 rounded-full hover:bg-green-600 transition-colors flex items-center justify-center group"
-            title="Maximize"
-            aria-label="Maximize terminal"
           >
-            <Maximize2 className="w-2 h-2 text-green-900 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
+            {isMaximized ? (
+              <Minimize2 className="size-3.5" strokeWidth={1.75} />
+            ) : (
+              <Maximize2 className="size-3.5" strokeWidth={1.75} />
+            )}
+          </ChromeButton>
+          <ChromeButton label="Close terminal" onClick={() => onClose?.()}>
+            <X className="size-3.5" strokeWidth={1.75} />
+          </ChromeButton>
         </div>
-        <span className="text-sm font-medium ml-2">Terminal</span>
       </div>
-      {isMaximized && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6"
-          onClick={() => setIsMaximized(false)}
-        >
-          <Minimize2 className="w-3 h-3" />
-        </Button>
-      )}
-    </div>
-    <AnimatePresence>
-      {!isMinimized && (
-    <motion.div
-      initial={{ height: 0, opacity: 0 }}
-      animate={{ height: 'auto', opacity: 1 }}
-      exit={{ height: 0, opacity: 0 }}
-      transition={{ duration: 0.2 }}
-    >
-    <div
-      ref={terminal.terminalRef}
-      className={`p-4 overflow-y-auto font-mono text-sm bg-slate-950/50 ${
-        isMaximized ? 'h-[calc(100vh-8rem)]' : 'h-80'
-      }`}
-      onClick={() => terminal.inputRef.current?.focus()}
-    >
-      {terminal.terminalHistory.map((line, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.01 }}
-          className={line.startsWith("$") ? "text-green-400" : "text-slate-300"}
-        >
-          {line}
-        </motion.div>
-      ))}
-      <div className="flex items-center mt-2">
-        <span className="text-green-400 mr-2">$</span>
-        <input
-          ref={terminal.inputRef}
-          type="text"
-          value={terminal.currentCommand}
-          onChange={(e) => terminal.setCurrentCommand(e.target.value)}
-          onKeyDown={(e) => {
-  if (e.key === "Enter") {
-    terminal.executeCommand(terminal.currentCommand)
-    terminal.setCurrentCommand("")
-  } else if (e.key === "Tab") {
-    e.preventDefault()
-    terminal.handleTabAutocomplete()
-  } else if (e.key === "ArrowUp") {
-    e.preventDefault()
-    terminal.navigateHistory("up")
-  } else if (e.key === "ArrowDown") {
-    e.preventDefault()
-    terminal.navigateHistory("down")
-  }
-}}
-          aria-label="Terminal command input"
 
-          className="flex-1 bg-transparent outline-none text-white"
-          placeholder="Type a command..."
-          spellCheck={false}
-        />
-        <motion.div animate={{ opacity: [1, 0] }} transition={{ repeat: Infinity, duration: 1.2 }} className="w-2 h-4 bg-white ml-1" />
-      </div>
-      
-    </div>
-    </motion.div>
+      {!isMinimized && (
+        <div
+          ref={terminal.terminalRef}
+          className={`overflow-y-auto p-4 font-mono text-[0.8125rem] leading-relaxed ${
+            isMaximized ? "flex-1" : "h-72"
+          }`}
+          onClick={() => terminal.inputRef.current?.focus()}
+        >
+          {terminal.terminalHistory.map((line, i) => {
+            const isCommand = line.startsWith("$")
+            return (
+              <div
+                key={i}
+                className={`whitespace-pre-wrap ${
+                  isCommand ? "text-accent" : "text-text-secondary"
+                }`}
+              >
+                {line || " "}
+              </div>
+            )
+          })}
+
+          <div className="mt-1 flex items-center gap-2">
+            <span className="select-none text-accent" aria-hidden>
+              $
+            </span>
+            <input
+              ref={terminal.inputRef}
+              type="text"
+              value={terminal.currentCommand}
+              onChange={(e) => terminal.setCurrentCommand(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  terminal.executeCommand(terminal.currentCommand)
+                  terminal.setCurrentCommand("")
+                } else if (e.key === "Tab") {
+                  e.preventDefault()
+                  terminal.handleTabAutocomplete()
+                } else if (e.key === "ArrowUp") {
+                  e.preventDefault()
+                  terminal.navigateHistory("up")
+                } else if (e.key === "ArrowDown") {
+                  e.preventDefault()
+                  terminal.navigateHistory("down")
+                }
+              }}
+              className="flex-1 bg-transparent text-text-primary caret-accent outline-none placeholder:text-text-tertiary"
+              placeholder="type a command — try `help`"
+              aria-label="Terminal command input"
+              spellCheck={false}
+              autoComplete="off"
+            />
+          </div>
+
+          {terminal.autocompleteSuggestions.length > 1 && (
+            <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 pl-4 text-text-tertiary">
+              {terminal.autocompleteSuggestions.map((s) => (
+                <span key={s}>{s}</span>
+              ))}
+            </div>
+          )}
+        </div>
       )}
-    </AnimatePresence>
-    <div className="absolute inset-0 pointer-events-none">
-      {terminal.autocompleteSuggestions.length > 1 && (
-  <div className="text-xs text-slate-400 mt-1 ml-6">
-    {terminal.autocompleteSuggestions.join("  ")}
-  </div>
-      )}
-    </div>
-  </Card>
+    </section>
   )
 }

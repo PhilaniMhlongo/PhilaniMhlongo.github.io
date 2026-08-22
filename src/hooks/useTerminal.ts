@@ -26,8 +26,8 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
   const [selectedFile, setSelectedFile] = useState<FileSystemItem | null>(null)
   const [selectedFileContent, setSelectedFileContent] = useState("")
   const [terminalHistory, setTerminalHistory] = useState<string[]>([
-    "Welcome to Philani's DevOps Workspace",
-    'Type "help" for available commands',
+    "Philani Mhlongo — DevOps & Cloud Engineer",
+    "Type `help` for available commands.",
     "",
   ])
 
@@ -157,32 +157,32 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
     switch (command) {
       case "help":
         output = [
-          "Available commands:",
           "",
-          "Navigation:",
-          "  ls              List files/directories",
-          "  cd <dir>        Change directory",
-          "  cat <file>      View file content (paths work too, e.g. cat blog/welcome.md)",
-          "  pwd             Print working directory",
+          "NAVIGATION",
+          "  ls                   list this directory",
+          "  cd <dir>             change directory",
+          "  cat <file>           read a file — paths work: cat blog/welcome.md",
+          "  pwd                  print working directory",
           "",
-          "Blog:",
-          "  blog            List all blog posts",
-          "  blog --tag <t>  Filter posts by tag",
-          "  blog --recent N Show N recent posts",
-          "  blog --featured Show featured posts",
-          "  blog --tags     List all tags",
-          "  search <query>  Search blog posts",
+          "WRITING",
+          "  blog                 list every post",
+          "  blog --tag <tag>     filter by tag",
+          "  blog --recent <n>    n most recent",
+          "  blog --featured      featured only",
+          "  blog --tags          list every tag",
+          "  search <query>       search posts",
+          "  subscribe <email>    get notified about new posts",
           "",
-          "Newsletter:",
-          "  subscribe <email>  Get notified when new content is published",
+          "OTHER",
+          "  whoami               about me",
+          "  clear                clear the screen",
           "",
-          "Other:",
-          "  whoami          About me",
-          "  clear           Clear terminal",
+          "Tab completes filenames  ·  ↑ ↓ recall history",
         ]
         break
       case "ls":
-        output = dir.map(i => `${i.type === "directory" ? "📁" : "📄"} ${i.name}`)
+        // Directories carry a trailing slash, as a real shell does
+        output = dir.map(i => (i.type === "directory" ? `${i.name}/` : i.name))
         break
       case "cd": {
         if (!args.length) {
@@ -236,9 +236,9 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
           const isBlogPost = resolved.dirPath.includes("blog") && file.extension === "md"
           if (isBlogPost) {
             const readingTime = calculateReadingTime(content)
-            output = [`📄 Opening ${file.name} (${readingTime})...`]
+            output = [`${file.name}  ·  ${readingTime}`]
           } else {
-            output = [`Opening ${file.name}...`]
+            output = [file.name]
           }
         } else {
           output = [`File not found: ${args[0]}`]
@@ -307,14 +307,14 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
           // Filter by tag
           if (flags.tag && typeof flags.tag === 'string') {
             posts = filterPostsByTag(posts, flags.tag)
-            output = formatBlogListings(posts, `📝 Posts tagged: ${flags.tag}`)
+            output = formatBlogListings(posts, `posts tagged ${flags.tag}`)
             break
           }
 
           // Show featured only
           if (flags.featured) {
             posts = getFeaturedPosts(posts)
-            output = formatBlogListings(posts, '⭐ Featured Posts')
+            output = formatBlogListings(posts, 'featured posts')
             break
           }
 
@@ -323,14 +323,14 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
             const count = parseInt(flags.recent, 10)
             if (!isNaN(count) && count > 0) {
               posts = getRecentPosts(posts, count)
-              output = formatBlogListings(posts, `📰 ${count} Most Recent Posts`)
+              output = formatBlogListings(posts, `${count} most recent`)
               break
             }
           }
 
           // Default: show all posts sorted by date
           posts = sortPostsByDate(posts)
-          output = formatBlogListings(posts, '📝 All Blog Posts')
+          output = formatBlogListings(posts, 'all posts')
         } catch (error) {
           output = [
             'Error loading blog posts.',

@@ -17,7 +17,7 @@ export async function subscribeToNewsletter(email: string): Promise<string[]> {
     )
     window.location.href = `mailto:${NEWSLETTER_FALLBACK_EMAIL}?subject=${subject}&body=${body}`
     return [
-      `📬 Opening your mail client to subscribe ${email}...`,
+      `Opening your mail client to subscribe ${email}…`,
       "",
       "Hit send and I'll add you to the list — you'll get an email",
       "whenever new content is published.",
@@ -34,14 +34,14 @@ export async function subscribeToNewsletter(email: string): Promise<string[]> {
       body: new URLSearchParams({ email }).toString(),
     })
     return [
-      `✅ ${email} is on the list!`,
+      `${email} is on the list.`,
       "",
       "Check your inbox for a confirmation email — you'll be notified",
       "whenever new content is published.",
     ]
   } catch {
     return [
-      "❌ Something went wrong while subscribing.",
+      "Something went wrong while subscribing.",
       `Please try again later, or email ${NEWSLETTER_FALLBACK_EMAIL} directly.`,
     ]
   }

@@ -65,56 +65,53 @@ export const CodeBlock = ({ language, value }: CodeBlockProps) => {
   }
 
   return (
-    <div className="relative group my-6">
-      {/* Header with language label and copy button */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[hsl(210,18%,12%)] border border-border rounded-t-lg border-b-0">
-        <span className="text-xs font-semibold text-text-tertiary uppercase tracking-wider">
+    <div className="group relative my-7 overflow-hidden rounded border border-border">
+      <div className="flex items-center justify-between border-b border-border bg-surface-elevated px-3.5 py-1.5">
+        <span className="font-mono text-2xs uppercase tracking-label text-text-tertiary">
           {LANGUAGE_LABELS[language] || language}
         </span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2 py-1 text-xs rounded-md bg-surface-elevated hover:bg-surface-hover text-text-secondary hover:text-text-primary transition-all opacity-0 group-hover:opacity-100"
-          aria-label="Copy code"
+          className="flex items-center gap-1.5 rounded-sm px-1.5 py-0.5 font-mono text-2xs text-text-tertiary opacity-0 transition-opacity duration-150 hover:text-text-primary focus-visible:opacity-100 group-hover:opacity-100"
+          aria-label={copied ? "Copied" : "Copy code"}
         >
           {copied ? (
             <>
-              <Check className="w-3.5 h-3.5 text-success" />
-              <span className="text-success">Copied!</span>
+              <Check className="size-3" strokeWidth={1.75} />
+              copied
             </>
           ) : (
             <>
-              <Copy className="w-3.5 h-3.5" />
-              <span>Copy</span>
+              <Copy className="size-3" strokeWidth={1.75} />
+              copy
             </>
           )}
         </button>
       </div>
 
-      {/* Code block */}
-      <div className="border border-border rounded-b-lg overflow-hidden shadow-lg">
-        <SyntaxHighlighter
-          language={language}
-          style={atomDark}
-          PreTag="div"
-          customStyle={{
-            margin: 0,
-            borderRadius: 0,
-            fontSize: "0.875rem",
-            lineHeight: "1.7",
-            padding: "1.25rem",
-            background: "hsl(210, 18%, 12%)",
-          }}
-          showLineNumbers={value.split("\n").length > 10}
-          lineNumberStyle={{
-            minWidth: "3em",
-            paddingRight: "1em",
-            color: "hsl(212, 9%, 45%)",
-            userSelect: "none",
-          }}
-        >
-          {value}
-        </SyntaxHighlighter>
-      </div>
+      <SyntaxHighlighter
+        language={language}
+        style={atomDark}
+        PreTag="div"
+        customStyle={{
+          margin: 0,
+          borderRadius: 0,
+          fontSize: "0.8125rem",
+          lineHeight: "1.7",
+          padding: "1.125rem",
+          background: "hsl(var(--surface))",
+        }}
+        codeTagProps={{ style: { fontFamily: "inherit" } }}
+        showLineNumbers={value.split("\n").length > 10}
+        lineNumberStyle={{
+          minWidth: "2.5em",
+          paddingRight: "1.25em",
+          color: "hsl(var(--text-tertiary))",
+          userSelect: "none",
+        }}
+      >
+        {value}
+      </SyntaxHighlighter>
     </div>
   )
 }

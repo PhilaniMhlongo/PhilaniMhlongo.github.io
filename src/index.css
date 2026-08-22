@@ -2,468 +2,275 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* Self-hosted variable fonts (no third-party requests, no FOUT) */
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
 @layer base {
   :root {
-    /* === Base Colors === */
-    --background: 215 28% 7%;          /* Deep dark base */
-    --foreground: 210 40% 98%;         /* High contrast text */
+    /* ===========================================================
+       Neutrals — a single cool-gray ramp carries the whole UI.
+       Austerity comes from restraint here, not from more colour.
+    =========================================================== */
+    --background: 220 14% 6%;
+    --surface: 220 13% 8.5%;
+    --surface-elevated: 220 12% 11%;
+    --surface-hover: 220 11% 14%;
 
-    /* === Surface Layers === */
-    --card: 212 19% 11%;               /* Card backgrounds */
-    --card-foreground: 210 40% 96%;
-    --popover: 212 19% 11%;
-    --popover-foreground: 210 40% 96%;
-    --surface-elevated: 210 18% 14%;   /* Elevated surfaces */
-    --surface-hover: 210 15% 18%;      /* Hover states */
+    /* Hairlines. Deliberately quiet — borders should separate,
+       not decorate. */
+    --border: 220 10% 15%;
+    --border-strong: 220 9% 22%;
 
-    /* === Semantic Colors === */
-    /* Primary - DevOps Blue (Actions, Links, Focus) */
-    --primary: 213 94% 58%;
-    --primary-hover: 213 94% 65%;
-    --primary-foreground: 210 40% 98%;
+    /* ===========================================================
+       Text — three steps, no more. Off-white rather than pure
+       white so long-form reading stays comfortable.
+    =========================================================== */
+    --text-primary: 210 17% 92%;
+    --text-secondary: 215 11% 68%;
+    --text-tertiary: 215 9% 45%;
 
-    /* Success - Terminal Green (Passing states, Success) */
-    --success: 125 70% 70%;
-    --success-hover: 125 70% 75%;
-    --success-foreground: 215 28% 7%;
+    /* ===========================================================
+       Accent — ONE hue for the entire interface. A muted sage
+       that keeps the terminal lineage without the neon.
+    =========================================================== */
+    --accent: 145 32% 60%;
+    --accent-muted: 145 25% 38%;
 
-    /* Warning - Amber (Warnings, Running states) */
-    --warning: 38 92% 50%;
-    --warning-hover: 38 92% 55%;
-    --warning-foreground: 215 28% 7%;
+    /* Status — reserved for genuine state, desaturated so they
+       never read as decoration. */
+    --danger: 358 55% 62%;
+    --warning: 38 55% 60%;
 
-    /* Danger - Red (Errors, Failed states) */
-    --danger: 0 84% 60%;
-    --danger-hover: 0 84% 65%;
-    --danger-foreground: 210 40% 98%;
+    /* Aliases kept so existing utility classes stay valid */
+    --foreground: var(--text-primary);
+    --card: var(--surface);
+    --card-foreground: var(--text-primary);
+    --popover: var(--surface);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--accent);
+    --primary-hover: 145 32% 68%;
+    --primary-foreground: 220 14% 6%;
+    --secondary: 220 11% 14%;
+    --secondary-foreground: var(--text-primary);
+    --muted: 220 11% 14%;
+    --muted-foreground: var(--text-tertiary);
+    --success: var(--accent);
+    --info: var(--accent);
+    --destructive: var(--danger);
+    --destructive-foreground: 210 17% 92%;
+    --input: 220 11% 14%;
+    --ring: var(--accent);
+    --text-link: var(--accent);
+    --text-code: var(--accent);
 
-    /* Info - Cyan (Info messages, Hints) */
-    --info: 190 90% 50%;
-    --info-hover: 190 90% 55%;
-    --info-foreground: 215 28% 7%;
-
-    /* === Accent System === */
-    --accent: 125 70% 70%;             /* Terminal green - kept for backwards compat */
-    --accent-foreground: 215 28% 7%;
-    --accent-secondary: 280 70% 65%;   /* Purple accent for variety */
-
-    /* === Neutral Scale === */
-    --secondary: 210 12% 16%;
-    --secondary-foreground: 210 40% 92%;
-    --muted: 210 12% 21%;
-    --muted-foreground: 212 9% 62%;    /* Increased contrast */
-    --border: 210 12% 24%;             /* Lighter border for better visibility */
-    --input: 210 12% 21%;
-    --ring: 213 94% 58%;
-
-    /* === Typography Colors === */
-    --text-primary: 210 40% 98%;       /* High emphasis */
-    --text-secondary: 212 9% 75%;      /* Medium emphasis */
-    --text-tertiary: 212 9% 62%;       /* Low emphasis */
-    --text-link: 213 94% 58%;          /* Links */
-    --text-code: 280 70% 75%;          /* Inline code */
-
-    /* === UI Customization === */
-    --radius: 0.375rem;                /* Slightly larger for modern feel */
-    --radius-lg: 0.5rem;
-    --radius-sm: 0.25rem;
-
-    /* Legacy compat */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --radius: 0.25rem;
+    --radius-lg: 0.375rem;
+    --radius-sm: 0.1875rem;
   }
-}
-@layer base {
+
   * {
     @apply border-border;
     border-style: solid;
   }
 
   html {
-    font-size: 15px;  /* Improved base size for readability */
+    font-size: 15px;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background;
     margin: 0;
-    font-family:
-      "Inter",
-      system-ui,
-      -apple-system,
-      BlinkMacSystemFont,
-      sans-serif;
-    font-feature-settings:
-      "liga" 1,
-      "calt" 1,
-      "ss01" 1,
-      "cv01" 1;
+    color: hsl(var(--text-secondary));
+    font-family: "Inter Variable", system-ui, -apple-system, sans-serif;
+    font-feature-settings: "liga" 1, "calt" 1, "cv05" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    line-height: 1.6;  /* Better line height for body text */
-    letter-spacing: -0.01em;  /* Tighter tracking for modern feel */
+    line-height: 1.6;
   }
 
-  /* Typography Scale */
   h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
     color: hsl(var(--text-primary));
+    font-weight: 550;
+    line-height: 1.25;
+    letter-spacing: -0.017em;
   }
 
-  h1 {
-    font-size: 2.25rem;  /* 36px */
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-
-  h2 {
-    font-size: 1.875rem;  /* 30px */
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-  }
-
-  h3 {
-    font-size: 1.5rem;  /* 24px */
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  h4 {
-    font-size: 1.25rem;  /* 20px */
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  p {
-    margin-bottom: 1rem;
-    color: hsl(var(--text-secondary));
-    line-height: 1.7;
-  }
+  p { color: hsl(var(--text-secondary)); }
 
   strong, b {
-    font-weight: 600;
+    color: hsl(var(--text-primary));
+    font-weight: 580;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  code, pre, .mono {
+    font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular,
+      Consolas, monospace;
+    font-variant-ligatures: none;
+  }
+
+  ::selection {
+    background: hsl(var(--accent) / 0.25);
     color: hsl(var(--text-primary));
   }
 
-  a {
-    color: hsl(var(--text-link));
-    text-decoration: none;
+  /* Visible only for keyboard users */
+  :focus-visible {
+    outline: 1px solid hsl(var(--accent));
+    outline-offset: 2px;
   }
+}
 
-  code {
-    font-family:
-      "JetBrains Mono",
-      "SFMono-Regular",
-      Consolas,
-      monospace;
-    font-size: 0.875em;
-  }
-}
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: hsl(var(--background));
-}
+/* ===========================================================
+   Scrollbars — present but nearly invisible until used
+=========================================================== */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
-  border-radius: 2px;
+  background: hsl(var(--border-strong));
+  border: 3px solid hsl(var(--background));
+  border-radius: 6px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground));
-}
-/* Terminal cursor animation */
-@keyframes blink {
-  0%,
-  50% {
-    opacity: 1;
-  }
-  51%,
-  100% {
-    opacity: 0;
-  }
-}
-.terminal-cursor {
-  animation: blink 1.2s steps(2, start) infinite;
-}
-/* Smooth transitions */
-* {
-  transition-property:
-  background-color,
-  border-color,
-  color,
-  opacity,
-  transform;
-transition-timing-function:
-  cubic-bezier(0.2, 0, 0, 1);
-transition-duration: 120ms;
-}
-::selection {
-  background: hsl(var(--primary) / 0.35);
-  color: hsl(var(--foreground));
-}
-code,
-pre,
-.terminal,
-.log,
-.mono {
-  font-family:
-    "JetBrains Mono",
-    "SFMono-Regular",
-    Consolas,
-    monospace;
-}
-/* =========================================
-   Enhanced Prose/Markdown Styling
-========================================= */
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--text-tertiary)); }
 
+/* ===========================================================
+   Motion — short, few, and fully opt-out
+=========================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===========================================================
+   Prose — the reading surface. Restraint is the point:
+   no coloured rules, no shadows, no hover tricks.
+=========================================================== */
 .prose {
-  /* Optimal reading measure */
   max-width: 68ch;
-
-  /* Enhanced spacing */
-  font-size: 1.0625rem;  /* 17px for better readability */
+  font-size: 1.0625rem;
   line-height: 1.75;
-  letter-spacing: -0.011em;
-
-  /* Color hierarchy */
   color: hsl(var(--text-secondary));
 }
 
-/* Headings */
 .prose h1 {
   color: hsl(var(--text-primary));
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid hsl(var(--border));
-  padding-bottom: 0.75rem;
+  font-size: clamp(1.5rem, 1.1rem + 2vw, 2rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.023em;
+  margin: 0 0 1.25rem;
 }
 
 .prose h2 {
   color: hsl(var(--text-primary));
-  font-size: 1.875rem;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid hsl(var(--border));
-  padding-bottom: 0.5rem;
+  font-size: 1.375rem;
+  font-weight: 580;
+  letter-spacing: -0.017em;
+  margin: 2.75rem 0 0.875rem;
 }
 
 .prose h3 {
   color: hsl(var(--text-primary));
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 580;
+  margin: 2rem 0 0.625rem;
 }
 
 .prose h4 {
   color: hsl(var(--text-primary));
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 580;
+  margin: 1.5rem 0 0.5rem;
 }
 
-/* Paragraphs */
-.prose p {
-  margin-bottom: 1.5rem;
-  line-height: 1.8;
-}
+.prose p { margin: 0 0 1.375rem; line-height: 1.75; }
+.prose p:last-child { margin-bottom: 0; }
 
-.prose p:last-child {
-  margin-bottom: 0;
-}
-
-/* Links */
 .prose a {
-  color: hsl(var(--primary));
-  font-weight: 500;
-  text-decoration: underline;
-  text-decoration-color: hsl(var(--primary) / 0.4);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
-  transition: all 180ms cubic-bezier(0.2, 0, 0, 1);
-  border-radius: 3px;
-}
-
-.prose a:hover {
-  color: hsl(var(--primary-hover));
-  text-decoration-color: hsl(var(--primary));
-  background-color: hsl(var(--primary) / 0.1);
-  padding-inline: 4px;
-  margin-inline: -4px;
-}
-
-/* Strong/Bold */
-.prose strong,
-.prose b {
   color: hsl(var(--text-primary));
-  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--accent) / 0.45);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 120ms ease;
 }
+.prose a:hover { text-decoration-color: hsl(var(--accent)); }
 
-/* Emphasis */
-.prose em {
-  color: hsl(var(--text-secondary));
-  font-style: italic;
-}
+.prose em { font-style: italic; }
 
-/* Lists */
-.prose ul,
-.prose ol {
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-  padding-left: 1.75rem;
-}
+.prose ul, .prose ol { margin: 1.25rem 0; padding-left: 1.25rem; }
+.prose li { margin: 0.4rem 0; line-height: 1.7; }
+.prose li::marker { color: hsl(var(--text-tertiary)); }
 
-.prose li {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  line-height: 1.7;
-}
-
-.prose li::marker {
-  color: hsl(var(--primary));
-  font-weight: 600;
-}
-
-/* Blockquotes */
 .prose blockquote {
-  border-left: 4px solid hsl(var(--primary));
-  padding-left: 1.5rem;
-  margin-left: 0;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-  font-style: italic;
+  border-left: 2px solid hsl(var(--border-strong));
+  padding: 0 0 0 1.25rem;
+  margin: 1.75rem 0;
   color: hsl(var(--text-tertiary));
-  background: hsl(var(--primary) / 0.05);
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  border-radius: var(--radius);
+  font-style: normal;
 }
+.prose blockquote p:last-child { margin-bottom: 0; }
 
-.prose blockquote p {
-  margin-bottom: 0.5rem;
-}
-
-/* Inline Code */
 .prose code {
-  background: hsl(var(--muted));
+  background: hsl(var(--surface-elevated));
   border: 1px solid hsl(var(--border));
-  color: hsl(var(--text-code));
-  padding: 0.2em 0.4em;
+  color: hsl(var(--text-primary));
+  padding: 0.1em 0.35em;
   border-radius: var(--radius-sm);
-  font-size: 0.9em;
-  font-weight: 500;
-  font-family: "JetBrains Mono", monospace;
+  font-size: 0.86em;
 }
 
-.prose a code {
-  color: hsl(var(--primary));
-}
-
-/* Code Blocks */
 .prose pre {
-  background: hsl(210 18% 12%) !important;
+  background: hsl(var(--surface)) !important;
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
-  padding: 1.25rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  padding: 1.125rem;
+  margin: 1.75rem 0;
   overflow-x: auto;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
 }
-
 .prose pre code {
   background: transparent;
   border: none;
   padding: 0;
-  color: hsl(var(--foreground));
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   line-height: 1.7;
 }
 
-/* Horizontal Rule */
 .prose hr {
   border: none;
-  border-top: 2px solid hsl(var(--border));
-  margin-top: 3rem;
-  margin-bottom: 3rem;
+  border-top: 1px solid hsl(var(--border));
+  margin: 3rem 0;
 }
 
-/* Tables */
 .prose table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin: 1.75rem 0;
   font-size: 0.9375rem;
 }
-
-.prose thead {
-  background: hsl(var(--surface-elevated));
-  border-bottom: 2px solid hsl(var(--border));
-}
-
+.prose thead { border-bottom: 1px solid hsl(var(--border-strong)); }
 .prose th {
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.875rem 0.5rem 0;
   text-align: left;
-  font-weight: 600;
+  font-weight: 580;
   color: hsl(var(--text-primary));
+  font-size: 0.8125rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
-
 .prose td {
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.875rem 0.625rem 0;
   border-bottom: 1px solid hsl(var(--border));
 }
 
-.prose tbody tr:hover {
-  background: hsl(var(--surface-hover));
-}
-
-/* Images - Enhanced */
 .prose img {
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border));
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  transition: all 300ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.prose img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
-}
-
-/* Code syntax highlighting */
-/* Infrastructure Syntax Theme */
-.language-python .keyword,
-.language-json .property,
-.language-markdown .title {
-  color: #2f81f7;
-}
-.language-python .string,
-.language-json .string {
-  color: #f0f6fc;
-}
-.language-python .comment {
-  color: #8b949e;
-}
-.language-python .function,
-.language-markdown .code {
-  color: #7ee787;
-}
-.language-json .number,
-.language-markdown .list {
-  color: #a5d6ff;
+  margin: 2rem 0;
+  max-width: 100%;
 }
