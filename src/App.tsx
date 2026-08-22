@@ -137,8 +137,9 @@ function App() {
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [terminal.inputRef])
 
+  // 44px is the touch minimum; the compact size is a pointer-only affordance.
   const viewerButton =
-    "flex size-7 items-center justify-center rounded-sm text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary"
+    "flex size-[44px] items-center justify-center rounded-sm text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary sm:size-7"
 
   return (
     <div className="min-h-screen">
@@ -163,7 +164,9 @@ function App() {
         {/* Mobile scrolls naturally; the viewport-locked split is a
             large-screen affordance. */}
         <div className="grid grid-cols-1 gap-5 lg:h-[calc(100vh-9.5rem)] lg:grid-cols-[260px_minmax(0,1fr)]">
-          <div className="max-h-64 lg:max-h-none">
+          {/* No mobile height cap: at 44px touch rows a fixed cap clipped the
+              last row in half, which reads as broken rather than scrollable. */}
+          <div>
             <FileExplorer terminal={terminal} />
           </div>
 

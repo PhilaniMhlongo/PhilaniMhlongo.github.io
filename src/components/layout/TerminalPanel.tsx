@@ -23,7 +23,7 @@ const ChromeButton = ({
     onClick={onClick}
     aria-label={label}
     title={label}
-    className="flex size-6 items-center justify-center rounded-sm text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary"
+    className="flex size-[44px] items-center justify-center rounded-sm text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary sm:size-6"
   >
     {children}
   </button>
@@ -141,7 +141,7 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
                   terminal.navigateHistory("down")
                 }
               }}
-              className="flex-1 bg-transparent text-text-primary caret-accent outline-none placeholder:text-text-tertiary"
+              className="min-h-[44px] flex-1 bg-transparent text-text-primary caret-accent outline-none placeholder:text-text-tertiary sm:min-h-0"
               placeholder="type a command — try `help`"
               autoCapitalize="off"
               autoCorrect="off"
