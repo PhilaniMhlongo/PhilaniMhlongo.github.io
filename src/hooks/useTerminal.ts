@@ -37,10 +37,14 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
         const metadata = await fetchBlogMetadata()
         const featured = getFeaturedPosts(metadata.posts)
         if (featured.length > 0) {
+          // Metadata resolves asynchronously, so anything already printed
+          // in the meantime (a failed deep link, an early command) must be
+          // preserved rather than truncated away.
           setTerminalHistory(prev => [
-            ...prev.slice(0, 3), // Keep welcome message
+            ...prev.slice(0, 3), // the banner
             ...formatFeaturedPosts(featured),
-            ""
+            "",
+            ...prev.slice(3),    // whatever arrived before we did
           ])
         }
       } catch {
@@ -355,6 +359,17 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
     setTerminalHistory(prev => [...prev, `$ ${cmd}`, ...output, ""])
   }
 
+  /** Report a deep link that no longer resolves, in the terminal's own voice. */
+  const reportMissingPath = (path: string) => {
+    setTerminalHistory(prev => [
+      ...prev,
+      `$ cat ${path}`,
+      `cat: ${path}: no such file or directory`,
+      "// `ls` to see what's here, or `help` for everything",
+      "",
+    ])
+  }
+
   useEffect(() => {
     if (terminalRef.current) terminalRef.current.scrollTop = terminalRef.current.scrollHeight
   }, [terminalHistory])
@@ -375,6 +390,7 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
     setSelectedFileContent,
     handleTabAutocomplete,
     navigateHistory,
+    reportMissingPath,
     autocompleteSuggestions
   }
 }

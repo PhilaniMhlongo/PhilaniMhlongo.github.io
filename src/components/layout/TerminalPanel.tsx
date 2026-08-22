@@ -1,5 +1,5 @@
 import { Minus, Maximize2, Minimize2, X } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTerminal } from "../../hooks/useTerminal"
 
 type ReturnTypeOfUseTerminal = ReturnType<typeof useTerminal>
@@ -32,6 +32,14 @@ const ChromeButton = ({
 export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
   const [isMinimized, setIsMinimized] = useState(false)
   const [isMaximized, setIsMaximized] = useState(false)
+
+  // Only lines added since the last render animate in; re-rendering must
+  // never replay the whole scrollback.
+  const renderedCount = useRef(0)
+  const animateFrom = Math.min(renderedCount.current, terminal.terminalHistory.length)
+  useEffect(() => {
+    renderedCount.current = terminal.terminalHistory.length
+  }, [terminal.terminalHistory])
 
   if (!isOpen) return null
 
@@ -84,6 +92,10 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
             isMaximized ? "flex-1" : "h-72"
           }`}
           onClick={() => terminal.inputRef.current?.focus()}
+          role="log"
+          aria-live="polite"
+          aria-label="Terminal output"
+          tabIndex={0}
         >
           {terminal.terminalHistory.map((line, i) => {
             // Line type carries the colour, the way a README would:
@@ -93,8 +105,13 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
             else if (line.startsWith("##")) tone = "text-accent font-bold"
             else if (line.trimStart().startsWith("//")) tone = "text-text-tertiary italic"
 
+            const isNew = i >= animateFrom
             return (
-              <div key={i} className={`whitespace-pre-wrap ${tone}`}>
+              <div
+                key={i}
+                className={`whitespace-pre-wrap ${tone} ${isNew ? "line-in" : ""}`}
+                style={isNew ? ({ "--i": i - animateFrom } as React.CSSProperties) : undefined}
+              >
                 {line || " "}
               </div>
             )

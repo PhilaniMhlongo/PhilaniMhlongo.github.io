@@ -23,6 +23,8 @@ function App() {
   // Tracks URLs we set ourselves so the URL→command effect doesn't re-run
   // commands the user just typed.
   const syncedPathRef = useRef<string | null>(null)
+  // StrictMode double-invokes effects in development; report each dead link once.
+  const reportedMissingRef = useRef<string | null>(null)
 
   // Parse URL and execute the corresponding terminal command
   useEffect(() => {
@@ -37,26 +39,38 @@ function App() {
 
     // Walk the filesystem to the parent directory of the last segment
     let currentDir = fileSystem
+    let walked = true
     for (let i = 0; i < segments.length - 1; i++) {
       const dir = currentDir.find(f => f.name === segments[i] && f.type === 'directory')
-      if (!dir?.children) return
+      if (!dir?.children) { walked = false; break }
       currentDir = dir.children
     }
 
     const lastSegment = segments[segments.length - 1]
-    const file = currentDir.find(f =>
-      f.type === 'file' && (
-        f.name === lastSegment ||
-        f.name.replace(/\.[^/.]+$/, '') === lastSegment
-      )
-    )
+    const file = walked
+      ? currentDir.find(f =>
+          f.type === 'file' && (
+            f.name === lastSegment ||
+            f.name.replace(/\.[^/.]+$/, '') === lastSegment
+          )
+        )
+      : undefined
 
     // A single path-aware command avoids chaining cd+cat, which read stale
     // state when executed back-to-back in the same render.
     if (file) {
       terminal.executeCommand(`cat /${[...segments.slice(0, -1), file.name].join('/')}`)
-    } else if (currentDir.find(f => f.name === lastSegment && f.type === 'directory')) {
+    } else if (walked && currentDir.find(f => f.name === lastSegment && f.type === 'directory')) {
       terminal.executeCommand(`cd /${segments.join('/')}`)
+    } else {
+      // A deep link that no longer resolves should say so rather than
+      // silently rendering the home page.
+      if (reportedMissingRef.current !== location.pathname) {
+        reportedMissingRef.current = location.pathname
+        terminal.reportMissingPath(location.pathname)
+      }
+      syncedPathRef.current = '/'
+      navigate('/', { replace: true })
     }
   }, [location.pathname])
 
@@ -107,11 +121,38 @@ function App() {
     navigate('/', { replace: true })
   }
 
+  // "/" focuses the terminal from anywhere — 17 tab stops is too far to
+  // reach the site's primary interaction.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const el = document.activeElement
+      const typing = el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement
+      if (e.key === "/" && !typing) {
+        e.preventDefault()
+        setIsTerminalOpen(true)
+        requestAnimationFrame(() => terminal.inputRef.current?.focus())
+      }
+    }
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [terminal.inputRef])
+
   const viewerButton =
     "flex size-7 items-center justify-center rounded-sm text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary"
 
   return (
     <div className="min-h-screen">
+      <a
+        href="#terminal"
+        onClick={(e) => {
+          e.preventDefault()
+          setIsTerminalOpen(true)
+          requestAnimationFrame(() => terminal.inputRef.current?.focus())
+        }}
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:border focus:border-accent focus:bg-surface focus:px-3 focus:py-2 focus:text-2xs focus:text-text-primary"
+      >
+        skip to terminal
+      </a>
       <Header
         isTerminalOpen={isTerminalOpen}
         onTerminalToggle={() => setIsTerminalOpen(!isTerminalOpen)}
@@ -131,16 +172,17 @@ function App() {
               <>
                 {isViewerFullscreen && (
                   <div
-                    className="fixed inset-0 z-40 bg-background/70 backdrop-blur-sm"
+                    className="backdrop-in fixed inset-0 z-40 bg-background/70 backdrop-blur-sm"
                     onClick={() => setIsViewerFullscreen(false)}
                     aria-hidden
                   />
                 )}
                 <article
+                  key={terminal.selectedFile.name}
                   className={
                     isViewerFullscreen
-                      ? "fixed inset-3 z-50 flex flex-col overflow-hidden rounded border border-border bg-surface md:inset-8"
-                      : "flex min-h-0 flex-col overflow-hidden rounded border border-border bg-surface"
+                      ? "sheet-in fixed inset-3 z-50 flex flex-col overflow-hidden rounded border border-border bg-surface md:inset-8"
+                      : "panel-in flex min-h-0 flex-col overflow-hidden rounded border border-border bg-surface"
                   }
                 >
                   <div className="flex items-center gap-2 border-b border-border bg-surface-elevated px-3 py-2">

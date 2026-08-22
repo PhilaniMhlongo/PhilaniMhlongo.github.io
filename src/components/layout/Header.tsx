@@ -54,12 +54,14 @@ export const Header = ({ isTerminalOpen, onTerminalToggle, openFile }: HeaderPro
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-6 py-4">
         <div className="min-w-0">
-          <h1 className="truncate text-[0.9375rem] font-bold tracking-tight text-text-primary">
+          {/* Deliberately not an <h1>: the open document owns that, and two
+              competing h1s make the outline meaningless. */}
+          <p className="truncate text-[0.9375rem] font-bold tracking-tight text-text-primary">
             ~/philani
             {openFile && (
               <span className="font-normal text-text-tertiary"> — {openFile}</span>
             )}
-          </h1>
+          </p>
           <p className="mt-0.5 truncate text-2xs text-text-tertiary">
             platform &amp; devops engineer
             <span className="mx-1.5 text-border-strong">·</span>
@@ -82,7 +84,7 @@ export const Header = ({ isTerminalOpen, onTerminalToggle, openFile }: HeaderPro
               rel="noopener noreferrer"
               aria-label={label}
               title={label}
-              className="flex size-8 items-center justify-center rounded text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary"
+              className="flex size-[44px] items-center justify-center rounded text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary sm:size-8"
             >
               <Icon className="size-[15px]" strokeWidth={1.75} />
             </a>
@@ -94,7 +96,7 @@ export const Header = ({ isTerminalOpen, onTerminalToggle, openFile }: HeaderPro
             onClick={onTerminalToggle}
             aria-pressed={isTerminalOpen}
             title={isTerminalOpen ? "Hide terminal" : "Show terminal"}
-            className={`flex size-8 items-center justify-center rounded transition-colors duration-150 ${
+            className={`flex size-[44px] items-center justify-center rounded transition-colors duration-150 sm:size-8 ${
               isTerminalOpen
                 ? "bg-surface-hover text-accent"
                 : "text-text-tertiary hover:bg-surface-hover hover:text-text-primary"

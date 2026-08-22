@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
@@ -8,7 +9,7 @@ import rehypeSlug from "rehype-slug"
 import { CodeBlock } from "../ui/CodeBlock"
 import { ImageLightbox } from "../ui/ImageLightbox"
 import { BlogPostMetadata } from "../blog/BlogPostMetadata"
-import { fetchBlogMetadata, getPostByFileName } from "@/utils/blogUtils"
+import { fetchBlogMetadata, getPostByFileName, sortPostsByDate } from "@/utils/blogUtils"
 import type { BlogPost } from "@/types/blog"
 import "katex/dist/katex.min.css"
 
@@ -46,6 +47,10 @@ function MarkdownCode(props: Record<string, unknown>) {
   )
 }
 
+function MarkdownH1(props: Record<string, unknown>) {
+  return <h1 className="wipe-in">{props.children as React.ReactNode}</h1>
+}
+
 function MarkdownPre(props: Record<string, unknown>) {
   return <>{props.children as React.ReactNode}</>
 }
@@ -56,7 +61,6 @@ function MarkdownA(props: Record<string, unknown>) {
       href={props.href as string}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-primary font-medium underline decoration-primary/50 decoration-2 underline-offset-2 hover:text-primary/80 hover:decoration-primary transition-colors"
     >
       {props.children as React.ReactNode}
     </a>
@@ -95,14 +99,13 @@ function MarkdownBlockquote(props: Record<string, unknown>) {
   }
 
   return (
-    <blockquote className="border-l-4 border-muted pl-4 italic text-muted-foreground my-4">
-      {children}
-    </blockquote>
+    <blockquote>{children}</blockquote>
   )
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const MD_COMPONENTS = {
+  h1:   MarkdownH1,
   code: MarkdownCode,
   pre:  MarkdownPre,
   a:    MarkdownA,
@@ -121,6 +124,8 @@ export const FileRenderer = ({
   fileName?: string
 }) => {
   const [blogPost, setBlogPost] = useState<BlogPost | null>(null)
+  const [siblings, setSiblings] = useState<{ older?: BlogPost; newer?: BlogPost }>({})
+  const navigate = useNavigate()
 
   useEffect(() => {
     // Fetch blog metadata if this is a blog post
@@ -131,6 +136,13 @@ export const FileRenderer = ({
           const post = getPostByFileName(metadata.posts, fileNameWithoutExt)
           if (post) {
             setBlogPost(post)
+            // Newest first, so the next entry is older than this one.
+            const ordered = sortPostsByDate(metadata.posts)
+            const at = ordered.findIndex(p => p.id === post.id)
+            setSiblings({ newer: ordered[at - 1], older: ordered[at + 1] })
+          } else {
+            setBlogPost(null)
+            setSiblings({})
           }
         })
         .catch((error: Error) => {
@@ -139,11 +151,18 @@ export const FileRenderer = ({
     }
   }, [extension, fileName])
 
+  const goToPost = (post: BlogPost) =>
+    navigate(`/blog/${post.fileName.replace(/\.md$/, "")}`)
+
   if (extension === "md") {
     return (
       <div>
         {/* Show blog metadata if available */}
-        {blogPost && <BlogPostMetadata post={blogPost} />}
+        {blogPost && (
+          <div className="rise-in" style={{ "--i": 1 } as React.CSSProperties}>
+            <BlogPostMetadata post={blogPost} />
+          </div>
+        )}
 
         <ReactMarkdown
           remarkPlugins={[
@@ -157,6 +176,51 @@ export const FileRenderer = ({
         >
           {content}
         </ReactMarkdown>
+
+        {/* A post used to end in nothing. Give the reader somewhere to go. */}
+        {blogPost && (
+          <nav
+            className="mt-16 border-t border-border pt-6"
+            aria-label="More posts"
+          >
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
+              {siblings.older ? (
+                <button
+                  onClick={() => goToPost(siblings.older!)}
+                  className="group text-left"
+                >
+                  <span className="block text-2xs text-text-tertiary">
+                    ← older
+                  </span>
+                  <span className="link-underline text-sm text-text-primary">
+                    {siblings.older.title}
+                  </span>
+                </button>
+              ) : (
+                <span />
+              )}
+
+              {siblings.newer && (
+                <button
+                  onClick={() => goToPost(siblings.newer!)}
+                  className="group text-left sm:text-right"
+                >
+                  <span className="block text-2xs text-text-tertiary">
+                    newer →
+                  </span>
+                  <span className="link-underline text-sm text-text-primary">
+                    {siblings.newer.title}
+                  </span>
+                </button>
+              )}
+            </div>
+
+            <p className="mt-6 text-2xs text-text-tertiary">
+              // press <span className="text-accent">/</span> for the terminal,
+              then <span className="text-accent">blog</span> to list everything
+            </p>
+          </nav>
+        )}
       </div>
     )
   }
