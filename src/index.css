@@ -161,6 +161,11 @@
 =========================================================== */
 
 :root {
+  /* Curves lifted from yui540/css-animations. They are extreme slow-fast-slow
+     rather than conventional ease-out, and that middle acceleration is what
+     gives the motion its snap. Used for anything that moves as an object. */
+  --ease-panel: cubic-bezier(0.78, 0.01, 0.19, 0.98);
+  --ease-snap: cubic-bezier(0.87, 0.05, 0.02, 0.97);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-mechanical: cubic-bezier(0.2, 0, 0, 1);
 }
@@ -183,25 +188,53 @@
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: none; }
 }
-.panel-in { animation: panel-in 240ms var(--ease-out) backwards; }
+.panel-in { animation: panel-in 260ms var(--ease-panel) backwards; }
 
 /* Full-screen reader: the backdrop settles, the sheet rises into it */
 @keyframes backdrop-in { from { opacity: 0 } to { opacity: 1 } }
 .backdrop-in { animation: backdrop-in 200ms ease-out backwards; }
 
-@keyframes sheet-in {
-  from { opacity: 0; transform: translateY(10px) scale(0.994); }
+/* Two tracks on one element, the way yui540 layers panel-enter with
+   panel-flatten: the sheet rises while it simultaneously unfolds from its
+   bottom edge, on different durations so the two never resolve together. */
+@keyframes sheet-rise {
+  from { opacity: 0; transform: translateY(12px) scale(0.994); }
   to   { opacity: 1; transform: none; }
 }
-.sheet-in { animation: sheet-in 280ms var(--ease-out) backwards; }
-
-/* Post title wipes in left-to-right — a typed line, not a fade.
-   clip-path keeps it GPU-cheap and needs no JS. */
-@keyframes wipe-in {
-  from { clip-path: inset(0 100% 0 0); opacity: 0.4; }
-  to   { clip-path: inset(0 0 0 0); opacity: 1; }
+@keyframes sheet-unfold {
+  from { clip-path: inset(0 0 14% 0 round var(--radius)); }
+  to   { clip-path: inset(0 0 0 0 round var(--radius)); }
 }
-.wipe-in { animation: wipe-in 460ms var(--ease-mechanical) backwards; }
+.sheet-in {
+  animation:
+    sheet-rise 360ms var(--ease-panel) both,
+    sheet-unfold 620ms var(--ease-panel) both;
+}
+
+/* Headings reveal a word at a time from behind their own baseline —
+   yui540's --delay stagger idiom applied at word rather than character
+   granularity, which keeps the heading one readable string for assistive
+   tech while still reading as typed. */
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  /* protect descenders from the clip */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  vertical-align: bottom;
+}
+@keyframes word-rise {
+  from { transform: translateY(105%); }
+  to   { transform: translateY(0); }
+}
+.word {
+  display: inline-block;
+  /* Deliberately NOT --ease-panel. yui540's slow-fast-slow curve is for an
+     object crossing a scene; behind a mask its dead first 40% leaves the
+     heading blank long enough to look broken. A reveal wants to leave
+     immediately and settle. */
+  animation: word-rise 440ms var(--ease-out) var(--delay, 0s) both;
+}
 
 /* Post metadata and body follow the title in */
 @keyframes rise-in {
@@ -213,9 +246,46 @@
   animation-delay: calc(var(--i, 0) * 70ms);
 }
 
+/* A single skewed sweep across a file as it opens. This is yui540's
+   shine-sweep polygon — the leading and trailing edges are offset by
+   --sweep-skew so the band leans as it crosses — pulled right down in
+   opacity so it reads as a scanline rather than a shine. */
+@keyframes scanline-sweep {
+  from {
+    clip-path: polygon(
+      calc(var(--sweep-w) * -1) 0,
+      0 0,
+      calc(var(--sweep-skew) * -1) 100%,
+      calc((var(--sweep-skew) + var(--sweep-w)) * -1) 100%
+    );
+  }
+  60%, to {
+    clip-path: polygon(
+      calc(100% + var(--sweep-skew)) 0,
+      calc(100% + var(--sweep-skew) + var(--sweep-w)) 0,
+      calc(100% + var(--sweep-w)) 100%,
+      100% 100%
+    );
+  }
+}
+.scanline {
+  --sweep-w: 140px;
+  --sweep-skew: 45%;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--accent) / 0.06),
+    transparent
+  );
+  animation: scanline-sweep 1s var(--ease-panel) 100ms both;
+}
+
 /* File explorer rows on directory change */
 .row-in {
-  animation: line-in 200ms var(--ease-out) backwards;
+  animation: line-in 220ms var(--ease-panel) backwards;
   animation-delay: calc(min(var(--i, 0), 8) * 20ms);
 }
 

@@ -185,9 +185,13 @@ function App() {
                   className={
                     isViewerFullscreen
                       ? "sheet-in fixed inset-3 z-50 flex flex-col overflow-hidden rounded border border-border bg-surface md:inset-8"
-                      : "panel-in flex min-h-0 flex-col overflow-hidden rounded border border-border bg-surface"
+                      : "panel-in relative flex min-h-0 flex-col overflow-hidden rounded border border-border bg-surface"
                   }
                 >
+                  {/* One sweep as the file lands. Keyed with the article, so
+                      it replays per file and never loops. */}
+                  <span className="scanline z-10" aria-hidden />
+
                   <div className="flex items-center gap-2 border-b border-border bg-surface-elevated px-3 py-2">
                     {getFileIcon(terminal.selectedFile)}
                     <span className="truncate text-2xs text-text-secondary">

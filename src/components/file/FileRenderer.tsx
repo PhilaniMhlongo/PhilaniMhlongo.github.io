@@ -47,8 +47,38 @@ function MarkdownCode(props: Record<string, unknown>) {
   )
 }
 
+/**
+ * Splits plain-text heading content into per-word spans carrying a --delay,
+ * so the heading rises a word at a time (yui540's stagger idiom).
+ *
+ * Only strings are split; inline elements (code, emphasis) pass through
+ * untouched. The heading's accessible name is unchanged either way, because
+ * inline spans do not break up the text node for assistive tech.
+ */
+function staggerWords(children: React.ReactNode) {
+  let word = 0
+  const nodes = Array.isArray(children) ? children : [children]
+
+  return nodes.map((node, n) => {
+    if (typeof node !== "string") return <span key={`n${n}`}>{node}</span>
+
+    return node.split(/(\s+)/).map((chunk, c) => {
+      if (!chunk.trim()) return chunk
+      // Capped: a long heading must not still be arriving a second in.
+      const delay = `${Math.min(word++ * 32, 260) / 1000}s`
+      return (
+        <span className="word-mask" key={`w${n}-${c}`}>
+          <span className="word" style={{ "--delay": delay } as React.CSSProperties}>
+            {chunk}
+          </span>
+        </span>
+      )
+    })
+  })
+}
+
 function MarkdownH1(props: Record<string, unknown>) {
-  return <h1 className="wipe-in">{props.children as React.ReactNode}</h1>
+  return <h1>{staggerWords(props.children as React.ReactNode)}</h1>
 }
 
 function MarkdownPre(props: Record<string, unknown>) {
