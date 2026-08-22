@@ -61,9 +61,9 @@ export const Header = ({ isTerminalOpen, onTerminalToggle, openFile }: HeaderPro
             )}
           </h1>
           <p className="mt-0.5 truncate text-2xs text-text-tertiary">
-            devops &amp; cloud engineer
+            platform &amp; devops engineer
             <span className="mx-1.5 text-border-strong">·</span>
-            south africa
+            durban, za
             <span className="mx-1.5 text-border-strong">·</span>
             {getExperience()} experience
           </p>

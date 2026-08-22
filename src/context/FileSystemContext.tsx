@@ -30,6 +30,19 @@ export const fileSystem: FileSystemItem[] = [
     description: "A showcase of my recent work.",
     children: [
       {
+        name: "kubernetes-platform-lab",
+        type: "directory",
+        description: "Multi-node kubeadm cluster built by hand for CKA prep.",
+        children: [
+          {
+            name: "readme.md",
+            type: "file",
+            extension: "md",
+            contentPath: "/content/projects/kubernetes-platform-lab/readme.md",
+          },
+        ],
+      },
+      {
         name: "terminal-portfolio",
         type: "directory",
         description: "This interactive web-based terminal portfolio.",
@@ -43,7 +56,7 @@ export const fileSystem: FileSystemItem[] = [
 
         ],
       },
-      
+
     ],
   },
   {

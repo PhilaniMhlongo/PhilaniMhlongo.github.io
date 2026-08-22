@@ -1,68 +1,63 @@
 {
+  "_comment": "Grouped by domain rather than rated by level — everything listed here is used in production or in deliberate lab practice.",
 
-  
-  "infrastructure": {
-    "terraform": {
-      "level": "novice",
-      "years": 1,
-      "description": "Infrastructure as Code"
-    },
-    "ansible": {
-      "level": "novice",
-      "years": 1,
-      "description": "Configuration Management"
-    },
-    "kubernetes": {
-      "level": "beginner",
-      "years": 0.5,
-      "description": "Container Orchestration"
-    },
-    "docker": {
-      "level": "intermediate",
-      "years": 2,
-      "description": "Containerization & Dev Environments"
-    }
+  "cloud_aws": {
+    "compute": ["EC2", "EKS", "ECS", "Lambda"],
+    "storage_data": ["S3", "RDS", "DynamoDB"],
+    "networking": ["VPC", "API Gateway", "CloudFront", "Route 53"],
+    "operations": ["Systems Manager", "CloudFormation", "EventBridge", "Step Functions"],
+    "security": ["IAM", "ACM"],
+    "ml": ["Bedrock"]
   },
-  "cicd": {
-    "jenkins": {
-      "level": "intermediate",
-      "years": 2,
-      "description": "CI/CD Pipeline Automation"
-    },
-    
-    "gitlab_ci": {
-      "level": "intermediate",
-      "years": 2,
-      "description": "GitLab CI/CD"
-    }
+
+  "containers_and_iac": {
+    "kubernetes": ["kubeadm", "EKS", "Cilium", "RBAC", "NetworkPolicy"],
+    "containers": ["Docker"],
+    "provisioning": ["Terraform", "CloudFormation"]
   },
-  "monitoring": {
-    "prometheus": {
-      "level": "beginner",
-      "years": 0.5,
-      "description": "Metrics and Monitoring"
-    },
-    "grafana": {
-      "level": "beginner",
-      "years": 0.5,
-      "description": "Data Visualization"
-    }
-  },
-  "backend": {
-    "spring_boot": {
-      "level": "novice",
-      "years": 1,
-      "description": "Java-based Backend Framework"
-    }
-  },
-  "cloud": {
-    "aws": {
-      "level": "novice",
-      "years": 1,
-      "description": "Amazon Web Services - EC2, S3, VPC, IAM, Lambda"
-    }
-  }
+
+  "cicd_and_automation": [
+    "Azure DevOps Pipelines",
+    "Self-hosted agents on EKS",
+    "Git / GitHub",
+    "Systems Manager Automation",
+    "PowerShell",
+    "Bash"
+  ],
+
+  "languages": ["Python", "PowerShell", "Bash", "TypeScript", "Java", "SQL"],
+
+  "integration": [
+    "REST / OpenAPI",
+    "WSO2 API Manager",
+    "apictl",
+    "Spectral linting"
+  ],
+
+  "platforms_and_data": [
+    "Oracle OIPA",
+    "Oracle Rules Palette",
+    "SQL Server",
+    "MySQL",
+    "Linux",
+    "Windows Server",
+    "Windows 365 Cloud PC"
+  ],
+
+  "networking_and_security": [
+    "TCP/IP",
+    "DNS",
+    "TLS / ACM",
+    "Java keystores and truststores",
+    "Cross-account IAM",
+    "Least-privilege role design"
+  ],
+
+  "operations": [
+    "Incident diagnosis and root-cause analysis",
+    "Runbooks and SOPs",
+    "Release governance",
+    "Environment management",
+    "UAT support"
+  ]
 }
-
-
-

@@ -17,7 +17,6 @@ import {
   formatTagsList,
   parseCommandFlags
 } from "../utils/terminalFormatters"
-import { isValidEmail, subscribeToNewsletter } from "../utils/newsletter"
 import type { FileSystemItem } from "../context/FileSystemContext"
 
 export const useTerminal = (fileSystem: FileSystemItem[]) => {
@@ -26,7 +25,7 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
   const [selectedFile, setSelectedFile] = useState<FileSystemItem | null>(null)
   const [selectedFileContent, setSelectedFileContent] = useState("")
   const [terminalHistory, setTerminalHistory] = useState<string[]>([
-    "philani mhlongo — devops & cloud engineer",
+    "philani mhlongo — platform & devops engineer",
     "// type `help` for available commands",
     "",
   ])
@@ -136,7 +135,7 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
   const executeCommand = async (cmd: string) => {
     const trimmed = cmd.trim()
     // Only the command word is case-insensitive; arguments (file names,
-    // search queries, email addresses) keep their original casing.
+    // search queries) keep their original casing.
     const [rawCommand, ...args] = trimmed.split(/\s+/)
     const command = (rawCommand ?? "").toLowerCase()
     let output: string[] = []
@@ -171,7 +170,6 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
           "  blog --featured      featured only",
           "  blog --tags          list every tag",
           "  search <query>       search posts",
-          "  subscribe <email>    get notified about new posts",
           "",
           "## other",
           "  whoami               about me",
@@ -252,7 +250,14 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
         setTerminalHistory([])
         return
       case "whoami":
-        output = ["philani mhlongo", "devops & cloud engineer", "south africa"]
+        output = [
+          "philani mhlongo",
+          "platform & devops engineer",
+          "durban, kwazulu-natal, south africa",
+          "",
+          "aws · kubernetes · azure devops · oracle oipa",
+          "aws certified cloudops engineer – associate · cka in progress",
+        ]
 
         // Add featured posts
         try {
@@ -265,30 +270,6 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
           // Silently fail if metadata not available
         }
         break
-
-      case "subscribe": {
-        const email = args[0]
-        if (!email) {
-          output = [
-            "Usage: subscribe <your-email>",
-            "",
-            "Example:",
-            "  subscribe jane@example.com",
-            "",
-            "You'll get an email whenever new content is published.",
-          ]
-          break
-        }
-        if (!isValidEmail(email)) {
-          output = [
-            `Invalid email address: ${email}`,
-            "Usage: subscribe <your-email>",
-          ]
-          break
-        }
-        output = await subscribeToNewsletter(email)
-        break
-      }
 
       case "blog":
         try {

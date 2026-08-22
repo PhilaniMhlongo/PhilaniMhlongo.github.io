@@ -59,7 +59,6 @@ export function formatBlogListings(posts: BlogPost[], title?: string): string[] 
   output.push('blog --tag <tag>     filter by tag');
   output.push('blog --recent <n>    n most recent');
   output.push('search <query>       search posts');
-  output.push('subscribe <email>    get notified about new posts');
 
   return output;
 }
@@ -105,7 +104,7 @@ export function formatFeaturedPosts(posts: BlogPost[]): string[] {
   });
 
   output.push('');
-  output.push('// `blog` lists everything · `subscribe <email>` for new posts');
+  output.push('// `blog` lists everything · `cat blog/<file>` to read');
 
   return output;
 }

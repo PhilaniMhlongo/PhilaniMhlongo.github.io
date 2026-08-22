@@ -1,36 +1,48 @@
 # certification.yaml
-# Cloud & DevOps Certifications
+# Cloud & platform certifications
 
 certifications:
+  - name: AWS Certified CloudOps Engineer – Associate
+    provider: AWS
+    status: certified
+    focus:
+      - Cloud operations
+      - Monitoring and logging
+      - Automation
+      - Infrastructure management
+
   - name: AWS Certified Cloud Practitioner
     provider: AWS
-    status: Certified
+    status: certified
     focus:
-      - Cloud Fundamentals
-      - AWS Services
-      - Billing & Pricing
-      - Security & Compliance
+      - Cloud fundamentals
+      - Core AWS services
+      - Billing and pricing
+      - Security and compliance
 
-  - name: AWS Certified CloudOps Engineer Associate
-    provider: AWS
-    status: Certified
+  - name: Certified Kubernetes Administrator (CKA)
+    provider: CNCF / Linux Foundation
+    status: in_progress
+    target: 2026
     focus:
-      - Cloud Operations
-      - Monitoring & Logging
-      - Automation
-      - Infrastructure Management
+      - Cluster architecture, installation and configuration
+      - Workloads and scheduling
+      - Services and networking
+      - Storage
+      - Troubleshooting
 
 career_path:
+  current: Platform & DevOps Engineering
   direction:
-    - DevOps Engineering
-    - Cloud Engineering
-    - Platform Engineering
+    - Platform engineering
+    - Cloud architecture
+    - Site reliability engineering
 
-current_learning:
-  - Kubernetes
-  - CI/CD
-  - Terraform
-  - Linux
-  - Docker
+currently_learning:
+  - Kubernetes internals (kubeadm, Cilium, RBAC, NetworkPolicy)
+  - Terraform at multi-account scale
+  - Evidence-led incident diagnosis
 
-goal: "Build scalable and reliable cloud infrastructure using DevOps best practices."
+goal: >-
+  Build scalable, reliable cloud infrastructure — and leave behind runbooks
+  that let anyone else operate it.
