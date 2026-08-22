@@ -16,9 +16,11 @@ export default {
         /* The single accent hue */
         accent: {
           DEFAULT: "hsl(var(--accent))",
-          muted: "hsl(var(--accent-muted))",
+          dim: "hsl(var(--accent-dim))",
           foreground: "hsl(var(--primary-foreground))",
         },
+        warm: "hsl(var(--warm))",
+        band: "hsl(var(--band))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           hover: "hsl(var(--primary-hover))",
@@ -68,7 +70,12 @@ export default {
         sm: "var(--radius-sm)",
       },
       fontFamily: {
-        sans: ["Inter Variable", "system-ui", "-apple-system", "sans-serif"],
+        sans: [
+          "JetBrains Mono Variable",
+          "ui-monospace",
+          "SFMono-Regular",
+          "monospace",
+        ],
         mono: [
           "JetBrains Mono Variable",
           "ui-monospace",

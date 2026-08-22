@@ -26,8 +26,8 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
   const [selectedFile, setSelectedFile] = useState<FileSystemItem | null>(null)
   const [selectedFileContent, setSelectedFileContent] = useState("")
   const [terminalHistory, setTerminalHistory] = useState<string[]>([
-    "Philani Mhlongo — DevOps & Cloud Engineer",
-    "Type `help` for available commands.",
+    "philani mhlongo — devops & cloud engineer",
+    "// type `help` for available commands",
     "",
   ])
 
@@ -158,13 +158,13 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
       case "help":
         output = [
           "",
-          "NAVIGATION",
+          "## navigation",
           "  ls                   list this directory",
           "  cd <dir>             change directory",
           "  cat <file>           read a file — paths work: cat blog/welcome.md",
           "  pwd                  print working directory",
           "",
-          "WRITING",
+          "## writing",
           "  blog                 list every post",
           "  blog --tag <tag>     filter by tag",
           "  blog --recent <n>    n most recent",
@@ -173,11 +173,11 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
           "  search <query>       search posts",
           "  subscribe <email>    get notified about new posts",
           "",
-          "OTHER",
+          "## other",
           "  whoami               about me",
           "  clear                clear the screen",
           "",
-          "Tab completes filenames  ·  ↑ ↓ recall history",
+          "// tab completes filenames · ↑ ↓ recalls history",
         ]
         break
       case "ls":
@@ -252,7 +252,7 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
         setTerminalHistory([])
         return
       case "whoami":
-        output = ["Philani Mhlongo", "DevOps Engineer", "South Africa"]
+        output = ["philani mhlongo", "devops & cloud engineer", "south africa"]
 
         // Add featured posts
         try {

@@ -4,11 +4,11 @@ import { formatDateShort } from './blogUtils';
 const RULE = '─'.repeat(52);
 
 /**
- * Section header: an uppercase label over a hairline rule.
- * Quieter and better aligned than boxed ASCII art.
+ * Section header in the page's markdown-source voice: `## snake_case`.
+ * TerminalPanel colours any line starting with `##`.
  */
 function sectionHeader(title: string): string[] {
-  return ['', title.toUpperCase(), RULE, ''];
+  return ['', `## ${title.trim().toLowerCase().replace(/\s+/g, '_')}`, ''];
 }
 
 /**
@@ -44,7 +44,7 @@ export function formatBlogListings(posts: BlogPost[], title?: string): string[] 
   if (title) output.push(...sectionHeader(title));
 
   if (posts.length === 0) {
-    output.push('No posts found.');
+    output.push('// no posts found');
     return output;
   }
 
@@ -54,7 +54,7 @@ export function formatBlogListings(posts: BlogPost[], title?: string): string[] 
 
   output.push('');
   output.push(RULE);
-  output.push(`${posts.length} post${posts.length !== 1 ? 's' : ''}`);
+  output.push(`// ${posts.length} post${posts.length !== 1 ? 's' : ''}`);
   output.push('');
   output.push('blog --tag <tag>     filter by tag');
   output.push('blog --recent <n>    n most recent');
@@ -73,9 +73,9 @@ export function formatSearchResults(posts: BlogPost[], query: string): string[] 
   output.push(...sectionHeader(`results for "${query}"`));
 
   if (posts.length === 0) {
-    output.push('No matches.');
+    output.push('// no matches');
     output.push('');
-    output.push('Try broader keywords, or `blog --tags` to see every tag.');
+    output.push('// try broader keywords, or `blog --tags` for every tag');
     return output;
   }
 
@@ -85,7 +85,7 @@ export function formatSearchResults(posts: BlogPost[], query: string): string[] 
 
   output.push('');
   output.push(RULE);
-  output.push(`${posts.length} result${posts.length !== 1 ? 's' : ''}`);
+  output.push(`// ${posts.length} result${posts.length !== 1 ? 's' : ''}`);
 
   return output;
 }
@@ -96,7 +96,7 @@ export function formatSearchResults(posts: BlogPost[], query: string): string[] 
 export function formatFeaturedPosts(posts: BlogPost[]): string[] {
   if (posts.length === 0) return [];
 
-  const output: string[] = ['', 'Featured writing'];
+  const output: string[] = ['', '## featured'];
 
   posts.slice(0, 3).forEach((post) => {
     output.push(
@@ -105,7 +105,7 @@ export function formatFeaturedPosts(posts: BlogPost[]): string[] {
   });
 
   output.push('');
-  output.push('`blog` lists everything  ·  `subscribe <email>` for new posts');
+  output.push('// `blog` lists everything · `subscribe <email>` for new posts');
 
   return output;
 }
@@ -131,7 +131,7 @@ export function formatTagsList(tags: string[]): string[] {
   }
 
   output.push('');
-  output.push('blog --tag <tag>     filter by tag');
+  output.push('// filter with `blog --tag <tag>`');
 
   return output;
 }

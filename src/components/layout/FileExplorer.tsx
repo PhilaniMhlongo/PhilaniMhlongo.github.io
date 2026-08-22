@@ -18,10 +18,8 @@ export const FileExplorer = ({ terminal }: Props) => {
       aria-label="File explorer"
     >
       <div className="flex items-center gap-2 border-b border-border bg-surface-elevated px-3 py-2">
-        <span className="font-mono text-2xs uppercase tracking-label text-text-tertiary">
-          files
-        </span>
-        <span className="ml-auto truncate font-mono text-2xs text-text-tertiary">
+        <span className="md-label font-bold">files</span>
+        <span className="ml-auto truncate text-2xs text-text-tertiary">
           ~/{terminal.currentPath.join("/")}
         </span>
       </div>

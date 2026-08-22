@@ -115,6 +115,7 @@ function App() {
       <Header
         isTerminalOpen={isTerminalOpen}
         onTerminalToggle={() => setIsTerminalOpen(!isTerminalOpen)}
+        openFile={terminal.selectedFile?.name}
       />
 
       <main className="mx-auto max-w-[1400px] px-6 py-6">
@@ -144,7 +145,7 @@ function App() {
                 >
                   <div className="flex items-center gap-2 border-b border-border bg-surface-elevated px-3 py-2">
                     {getFileIcon(terminal.selectedFile)}
-                    <span className="truncate font-mono text-2xs text-text-secondary">
+                    <span className="truncate text-2xs text-text-secondary">
                       {terminal.selectedFile.name}
                     </span>
 

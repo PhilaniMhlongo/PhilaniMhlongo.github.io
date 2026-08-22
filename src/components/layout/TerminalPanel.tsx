@@ -43,11 +43,9 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
       aria-label="Terminal"
     >
       <div className="flex items-center gap-2 border-b border-border bg-surface-elevated px-3 py-2">
-        <span className="font-mono text-2xs uppercase tracking-label text-text-tertiary">
-          terminal
-        </span>
-        <span className="font-mono text-2xs text-text-tertiary">
-          — ~/{terminal.currentPath.join("/")}
+        <span className="md-label font-bold">terminal</span>
+        <span className="text-2xs text-text-tertiary">
+          ~/{terminal.currentPath.join("/")}
         </span>
 
         <div className="ml-auto flex items-center gap-0.5">
@@ -88,14 +86,15 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
           onClick={() => terminal.inputRef.current?.focus()}
         >
           {terminal.terminalHistory.map((line, i) => {
-            const isCommand = line.startsWith("$")
+            // Line type carries the colour, the way a README would:
+            // `$` echoes, `##` section labels, `//` commentary.
+            let tone = "text-text-secondary"
+            if (line.startsWith("$")) tone = "text-accent"
+            else if (line.startsWith("##")) tone = "text-accent font-bold"
+            else if (line.trimStart().startsWith("//")) tone = "text-text-tertiary italic"
+
             return (
-              <div
-                key={i}
-                className={`whitespace-pre-wrap ${
-                  isCommand ? "text-accent" : "text-text-secondary"
-                }`}
-              >
+              <div key={i} className={`whitespace-pre-wrap ${tone}`}>
                 {line || " "}
               </div>
             )
@@ -103,7 +102,7 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
 
           <div className="mt-1 flex items-center gap-2">
             <span className="select-none text-accent" aria-hidden>
-              $
+              ❯
             </span>
             <input
               ref={terminal.inputRef}
@@ -127,6 +126,8 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
               }}
               className="flex-1 bg-transparent text-text-primary caret-accent outline-none placeholder:text-text-tertiary"
               placeholder="type a command — try `help`"
+              autoCapitalize="off"
+              autoCorrect="off"
               aria-label="Terminal command input"
               spellCheck={false}
               autoComplete="off"

@@ -37,9 +37,11 @@ const SOCIAL = [
 interface HeaderProps {
   isTerminalOpen: boolean
   onTerminalToggle: () => void
+  /** Current file, shown the way an editor titles an open buffer. */
+  openFile?: string
 }
 
-export const Header = ({ isTerminalOpen, onTerminalToggle }: HeaderProps) => {
+export const Header = ({ isTerminalOpen, onTerminalToggle, openFile }: HeaderProps) => {
   const [time, setTime] = useState(getLocalTime)
 
   useEffect(() => {
@@ -52,20 +54,23 @@ export const Header = ({ isTerminalOpen, onTerminalToggle }: HeaderProps) => {
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-6 py-4">
         <div className="min-w-0">
-          <h1 className="truncate text-[0.9375rem] font-medium tracking-tight text-text-primary">
-            Philani Mhlongo
+          <h1 className="truncate text-[0.9375rem] font-bold tracking-tight text-text-primary">
+            ~/philani
+            {openFile && (
+              <span className="font-normal text-text-tertiary"> — {openFile}</span>
+            )}
           </h1>
-          <p className="mt-0.5 truncate font-mono text-2xs text-text-tertiary">
-            DevOps &amp; Cloud Engineer
-            <span className="mx-1.5 text-border-strong">/</span>
-            South Africa
-            <span className="mx-1.5 text-border-strong">/</span>
+          <p className="mt-0.5 truncate text-2xs text-text-tertiary">
+            devops &amp; cloud engineer
+            <span className="mx-1.5 text-border-strong">·</span>
+            south africa
+            <span className="mx-1.5 text-border-strong">·</span>
             {getExperience()} experience
           </p>
         </div>
 
         <div className="ml-auto flex items-center gap-1">
-          <span className="mr-3 hidden font-mono text-2xs tabular-nums text-text-tertiary sm:inline">
+          <span className="mr-3 hidden text-2xs tabular-nums text-text-tertiary sm:inline">
             {time} SAST
           </span>
 
