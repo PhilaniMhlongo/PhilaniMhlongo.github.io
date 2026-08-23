@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
@@ -8,7 +9,7 @@ import rehypeSlug from "rehype-slug"
 import { CodeBlock } from "../ui/CodeBlock"
 import { ImageLightbox } from "../ui/ImageLightbox"
 import { BlogPostMetadata } from "../blog/BlogPostMetadata"
-import { fetchBlogMetadata, getPostByFileName } from "@/utils/blogUtils"
+import { fetchBlogMetadata, getPostByFileName, sortPostsByDate } from "@/utils/blogUtils"
 import type { BlogPost } from "@/types/blog"
 import "katex/dist/katex.min.css"
 
@@ -46,6 +47,40 @@ function MarkdownCode(props: Record<string, unknown>) {
   )
 }
 
+/**
+ * Splits plain-text heading content into per-word spans carrying a --delay,
+ * so the heading rises a word at a time (yui540's stagger idiom).
+ *
+ * Only strings are split; inline elements (code, emphasis) pass through
+ * untouched. The heading's accessible name is unchanged either way, because
+ * inline spans do not break up the text node for assistive tech.
+ */
+function staggerWords(children: React.ReactNode) {
+  let word = 0
+  const nodes = Array.isArray(children) ? children : [children]
+
+  return nodes.map((node, n) => {
+    if (typeof node !== "string") return <span key={`n${n}`}>{node}</span>
+
+    return node.split(/(\s+)/).map((chunk, c) => {
+      if (!chunk.trim()) return chunk
+      // Capped: a long heading must not still be arriving a second in.
+      const delay = `${Math.min(word++ * 32, 260) / 1000}s`
+      return (
+        <span className="word-mask" key={`w${n}-${c}`}>
+          <span className="word" style={{ "--delay": delay } as React.CSSProperties}>
+            {chunk}
+          </span>
+        </span>
+      )
+    })
+  })
+}
+
+function MarkdownH1(props: Record<string, unknown>) {
+  return <h1>{staggerWords(props.children as React.ReactNode)}</h1>
+}
+
 function MarkdownPre(props: Record<string, unknown>) {
   return <>{props.children as React.ReactNode}</>
 }
@@ -56,7 +91,6 @@ function MarkdownA(props: Record<string, unknown>) {
       href={props.href as string}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-primary font-medium underline decoration-primary/50 decoration-2 underline-offset-2 hover:text-primary/80 hover:decoration-primary transition-colors"
     >
       {props.children as React.ReactNode}
     </a>
@@ -79,48 +113,36 @@ function MarkdownBlockquote(props: Record<string, unknown>) {
 
   if (match) {
     const type = match[1].toLowerCase()
-    const containerClasses: Record<string, string> = {
-      note: "border-blue-500 bg-blue-500/10",
-      info: "border-blue-500 bg-blue-500/10",
-      tip: "border-green-500 bg-green-500/10",
-      important: "border-purple-500 bg-purple-500/10",
-      warning: "border-yellow-500 bg-yellow-500/10",
-    }
-    const iconClasses: Record<string, string> = {
-      note: "text-blue-500",
-      info: "text-blue-500",
-      tip: "text-green-500",
-      important: "text-purple-500",
-      warning: "text-yellow-500",
-    }
+    // Callouts are distinguished by their label, not by a colour each. Only
+    // warnings — a genuine state — take a tinted rule.
+    const accentClass =
+      type === "warning" ? "border-warning" : "border-border-strong"
 
     return (
-      <div className={`my-4 p-4 border-l-4 rounded-r ${containerClasses[type]}`}>
-        <div className={`font-bold mb-2 ${iconClasses[type]} uppercase text-sm`}>
+      <div className={`my-6 border-l-2 pl-5 ${accentClass}`}>
+        <div className="mb-1.5 font-mono text-2xs uppercase tracking-label text-text-tertiary">
           {type}
         </div>
-        <div className="prose-p:my-2">
-          {children}
-        </div>
+        <div className="prose-p:my-2">{children}</div>
       </div>
     )
   }
 
   return (
-    <blockquote className="border-l-4 border-muted pl-4 italic text-muted-foreground my-4">
-      {children}
-    </blockquote>
+    <blockquote>{children}</blockquote>
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const MD_COMPONENTS = {
+  h1:   MarkdownH1,
   code: MarkdownCode,
   pre:  MarkdownPre,
   a:    MarkdownA,
   img:  MarkdownImg,
   blockquote: MarkdownBlockquote,
 } as any
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export const FileRenderer = ({
   content,
@@ -132,6 +154,8 @@ export const FileRenderer = ({
   fileName?: string
 }) => {
   const [blogPost, setBlogPost] = useState<BlogPost | null>(null)
+  const [siblings, setSiblings] = useState<{ older?: BlogPost; newer?: BlogPost }>({})
+  const navigate = useNavigate()
 
   useEffect(() => {
     // Fetch blog metadata if this is a blog post
@@ -142,6 +166,13 @@ export const FileRenderer = ({
           const post = getPostByFileName(metadata.posts, fileNameWithoutExt)
           if (post) {
             setBlogPost(post)
+            // Newest first, so the next entry is older than this one.
+            const ordered = sortPostsByDate(metadata.posts)
+            const at = ordered.findIndex(p => p.id === post.id)
+            setSiblings({ newer: ordered[at - 1], older: ordered[at + 1] })
+          } else {
+            setBlogPost(null)
+            setSiblings({})
           }
         })
         .catch((error: Error) => {
@@ -150,11 +181,18 @@ export const FileRenderer = ({
     }
   }, [extension, fileName])
 
+  const goToPost = (post: BlogPost) =>
+    navigate(`/blog/${post.fileName.replace(/\.md$/, "")}`)
+
   if (extension === "md") {
     return (
       <div>
         {/* Show blog metadata if available */}
-        {blogPost && <BlogPostMetadata post={blogPost} />}
+        {blogPost && (
+          <div className="rise-in" style={{ "--i": 1 } as React.CSSProperties}>
+            <BlogPostMetadata post={blogPost} />
+          </div>
+        )}
 
         <ReactMarkdown
           remarkPlugins={[
@@ -168,6 +206,51 @@ export const FileRenderer = ({
         >
           {content}
         </ReactMarkdown>
+
+        {/* A post used to end in nothing. Give the reader somewhere to go. */}
+        {blogPost && (
+          <nav
+            className="mt-16 border-t border-border pt-6"
+            aria-label="More posts"
+          >
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
+              {siblings.older ? (
+                <button
+                  onClick={() => goToPost(siblings.older!)}
+                  className="press-row group text-left"
+                >
+                  <span className="block text-2xs text-text-tertiary">
+                    ← older
+                  </span>
+                  <span className="link-underline text-sm text-text-primary">
+                    {siblings.older.title}
+                  </span>
+                </button>
+              ) : (
+                <span />
+              )}
+
+              {siblings.newer && (
+                <button
+                  onClick={() => goToPost(siblings.newer!)}
+                  className="press-row group text-left sm:text-right"
+                >
+                  <span className="block text-2xs text-text-tertiary">
+                    newer →
+                  </span>
+                  <span className="link-underline text-sm text-text-primary">
+                    {siblings.newer.title}
+                  </span>
+                </button>
+              )}
+            </div>
+
+            <p className="mt-6 text-2xs text-text-tertiary">
+              // press <span className="text-accent">/</span> for the terminal,
+              then <span className="text-accent">blog</span> to list everything
+            </p>
+          </nav>
+        )}
       </div>
     )
   }
@@ -178,7 +261,7 @@ export const FileRenderer = ({
   }
 
   return (
-    <pre className="text-sm text-slate-300 whitespace-pre-wrap">
+    <pre className="whitespace-pre-wrap font-mono text-[0.8125rem] leading-relaxed text-text-secondary">
       {content}
     </pre>
   )

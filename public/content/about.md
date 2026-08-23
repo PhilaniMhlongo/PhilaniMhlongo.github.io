@@ -1,55 +1,58 @@
-# DevOps & Cloud Engineer · Kubernetes Specialist
+# Platform & DevOps Engineer
 
-Kubernetes engineer with hands-on production experience managing EKS clusters
-at Old Mutual's OIPA Platform Centre of Excellence. I build reliable,
-cloud-native infrastructure that helps teams ship faster with confidence
-from container orchestration and CI/CD pipelines to cloud operations at
-enterprise scale.
+I own the AWS, Azure DevOps, Kubernetes and Oracle OIPA estate that runs
+life-insurance policy administration for Old Mutual across five African
+markets — Malawi, Botswana, Zimbabwe, Kenya and Uganda.
 
-## Core Stack
+Most of my work is the unglamorous kind that keeps production honest:
+cross-account IAM, deployment control planes, incident diagnosis, and
+automating the manual steps that quietly cost teams hours every release.
 
-| Domain              | Tools                                      |
-|---------------------|--------------------------------------------|
-| Orchestration       | **Kubernetes (EKS)**, Helm, Docker         |
-| Cloud               | **AWS**, Azure                             |
-| CI/CD               | **Azure DevOps**                           |
-| Infrastructure      | Terraform, AWS CloudFormation              |
-| Monitoring          | Prometheus, Grafana, AWS CloudWatch        |
-| Systems             | Linux, Bash, Python, MSSQL                 |
+## Selected work
+
+| What | Result |
+|------|--------|
+| Cross-account deployment control plane on SSM + EKS | 45 min → **under 3 min** |
+| Consolidated WSO2 API delivery pipelines | 8 pipelines → **4** |
+| Serverless report distribution (API Gateway, Lambda, S3) | Fixed link expiry from STS session limits |
+| Migrated valuation-report delivery off on-prem SMTP to S3 | Lower cost, better retention and audit trail |
+| ACM certificate-expiry alerting | Silent outage risk → scheduled, actionable alerts |
 
 ---
 
-## Experience
+## Core stack
 
-**Old Mutual — Junior DevOps Engineer Intern** `Oct 2025 – Present`
-Platform / OIPA Centre of Excellence · Durban, ZA
-
-Working in an enterprise Kubernetes environment on AWS EKS, responsible for:
-- Managing and monitoring EKS clusters across dev, staging and production
-- Building and maintaining CI/CD pipelines in Azure DevOps
-- Infrastructure automation and cloud operations on AWS
-- Incident response and platform reliability for the OIPA insurance platform
-- Database operations and maintenance on MSSQL
+| Domain | Tools |
+|--------|-------|
+| Cloud | **AWS** (EC2, EKS, ECS, Lambda, S3, RDS, IAM, Systems Manager, API Gateway, Step Functions, EventBridge) |
+| Orchestration | **Kubernetes** (kubeadm, EKS, Cilium, RBAC, NetworkPolicy), Docker |
+| CI/CD | **Azure DevOps Pipelines**, self-hosted agents, Git |
+| Infrastructure | Terraform, CloudFormation, Systems Manager Automation |
+| Languages | Python, PowerShell, Bash, TypeScript, Java, SQL |
+| Integration | REST/OpenAPI, WSO2 API Manager, apictl, Spectral |
+| Platforms | Oracle OIPA, Rules Palette, SQL Server, Linux, Windows Server |
 
 ---
 
 ## Certifications
 
-- ✅ AWS Certified Cloud Practitioner
-- ✅ AWS Certified CloudOps Engineer – Associate
+- **AWS Certified CloudOps Engineer – Associate**
+- **AWS Certified Cloud Practitioner**
+- Certified Kubernetes Administrator (CKA) — *in progress, 2026*
 
 ---
 
 ## Philosophy
 
-> "Automate everything repetitive. Version everything important.
-> Build systems that scale beyond yourself."
+> Automate everything repetitive. Version everything important.
+> Build systems that scale beyond yourself.
 
 ---
 
-## Currently Focused On
+## Currently focused on
 
-- Kubernetes internals and CKA certification
+- Kubernetes internals, working toward the CKA
 - Platform engineering at enterprise scale
-- Advanced AWS architecture
-- Cloud-native tooling and developer experience
+- Evidence-led incident diagnosis and reusable runbooks
+
+`cd experience` for the detail, or `cd projects` to see what I build on my own time.

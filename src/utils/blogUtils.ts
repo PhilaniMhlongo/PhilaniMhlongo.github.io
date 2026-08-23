@@ -3,12 +3,24 @@ import type { BlogPost, BlogMetadata } from '@/types/blog';
 /**
  * Fetch blog metadata from JSON file
  */
+let metadataRequest: Promise<BlogMetadata> | null = null;
+
 export async function fetchBlogMetadata(): Promise<BlogMetadata> {
-  const response = await fetch('/content/blog/metadata.json');
-  if (!response.ok) {
-    throw new Error('Failed to fetch blog metadata');
+  // Memoised on the in-flight promise, not just the result. The terminal
+  // fetches this at mount and every opened file fetches it again; without
+  // this the post header arrives late and shoves the title down the page.
+  if (!metadataRequest) {
+    metadataRequest = fetch('/content/blog/metadata.json')
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to fetch blog metadata');
+        return response.json();
+      })
+      .catch(error => {
+        metadataRequest = null; // let a later call retry
+        throw error;
+      });
   }
-  return response.json();
+  return metadataRequest;
 }
 
 /**
@@ -169,5 +181,6 @@ export function getPostById(posts: BlogPost[], id: string): BlogPost | undefined
  * Get post by filename (without extension)
  */
 export function getPostByFileName(posts: BlogPost[], fileName: string): BlogPost | undefined {
-  return posts.find(post => post.fileName === fileName);
+  const normalized = fileName.replace(/\.md$/, '');
+  return posts.find(post => post.fileName.replace(/\.md$/, '') === normalized);
 }

@@ -2,468 +2,557 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* One typeface for the entire site — chrome, prose and code alike. */
+@import "@fontsource-variable/jetbrains-mono";
+
 @layer base {
   :root {
-    /* === Base Colors === */
-    --background: 215 28% 7%;          /* Deep dark base */
-    --foreground: 210 40% 98%;         /* High contrast text */
+    /* ===========================================================
+       Warm dark ramp. The heat is the point: a blue-grey dark
+       theme reads as generic tooling, a warm one reads as a
+       terminal someone actually chose.
+    =========================================================== */
+    --background: 15 20% 7%;
+    --band: 14 21% 8.5%;           /* alternating full-bleed sections */
+    --surface: 15 17% 10%;
+    --surface-elevated: 15 15% 13%;
+    --surface-hover: 14 14% 17%;
 
-    /* === Surface Layers === */
-    --card: 212 19% 11%;               /* Card backgrounds */
-    --card-foreground: 210 40% 96%;
-    --popover: 212 19% 11%;
-    --popover-foreground: 210 40% 96%;
-    --surface-elevated: 210 18% 14%;   /* Elevated surfaces */
-    --surface-hover: 210 15% 18%;      /* Hover states */
+    --border: 16 13% 17.5%;
+    --border-strong: 16 11% 26%;
 
-    /* === Semantic Colors === */
-    /* Primary - DevOps Blue (Actions, Links, Focus) */
-    --primary: 213 94% 58%;
-    --primary-hover: 213 94% 65%;
-    --primary-foreground: 210 40% 98%;
+    /* Warm cream rather than white — easier under long reading */
+    --text-primary: 35 28% 88%;
+    --text-secondary: 28 11% 66%;
+    --text-tertiary: 25 10% 58%;
 
-    /* Success - Terminal Green (Passing states, Success) */
-    --success: 125 70% 70%;
-    --success-hover: 125 70% 75%;
-    --success-foreground: 215 28% 7%;
+    /* Two accents, each with a job: green marks structure and
+       success, amber marks links and things that want a click. */
+    --accent: 125 27% 66%;
+    --accent-dim: 125 22% 54%;
+    --warm: 24 74% 58%;
 
-    /* Warning - Amber (Warnings, Running states) */
-    --warning: 38 92% 50%;
-    --warning-hover: 38 92% 55%;
-    --warning-foreground: 215 28% 7%;
+    --danger: 358 55% 62%;
+    --warning: 38 60% 60%;
 
-    /* Danger - Red (Errors, Failed states) */
-    --danger: 0 84% 60%;
-    --danger-hover: 0 84% 65%;
-    --danger-foreground: 210 40% 98%;
+    /* Aliases so existing utilities keep resolving */
+    --foreground: var(--text-primary);
+    --card: var(--surface);
+    --card-foreground: var(--text-primary);
+    --popover: var(--surface);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--accent);
+    --primary-hover: 125 27% 74%;
+    --primary-foreground: 15 20% 7%;
+    --secondary: 14 14% 17%;
+    --secondary-foreground: var(--text-primary);
+    --muted: 14 14% 17%;
+    --muted-foreground: var(--text-tertiary);
+    --success: var(--accent);
+    --info: var(--accent);
+    --destructive: var(--danger);
+    --destructive-foreground: 35 28% 88%;
+    --input: 14 14% 17%;
+    --ring: var(--accent);
+    --text-link: var(--warm);
+    --text-code: var(--accent);
 
-    /* Info - Cyan (Info messages, Hints) */
-    --info: 190 90% 50%;
-    --info-hover: 190 90% 55%;
-    --info-foreground: 215 28% 7%;
-
-    /* === Accent System === */
-    --accent: 125 70% 70%;             /* Terminal green - kept for backwards compat */
-    --accent-foreground: 215 28% 7%;
-    --accent-secondary: 280 70% 65%;   /* Purple accent for variety */
-
-    /* === Neutral Scale === */
-    --secondary: 210 12% 16%;
-    --secondary-foreground: 210 40% 92%;
-    --muted: 210 12% 21%;
-    --muted-foreground: 212 9% 62%;    /* Increased contrast */
-    --border: 210 12% 24%;             /* Lighter border for better visibility */
-    --input: 210 12% 21%;
-    --ring: 213 94% 58%;
-
-    /* === Typography Colors === */
-    --text-primary: 210 40% 98%;       /* High emphasis */
-    --text-secondary: 212 9% 75%;      /* Medium emphasis */
-    --text-tertiary: 212 9% 62%;       /* Low emphasis */
-    --text-link: 213 94% 58%;          /* Links */
-    --text-code: 280 70% 75%;          /* Inline code */
-
-    /* === UI Customization === */
-    --radius: 0.375rem;                /* Slightly larger for modern feel */
-    --radius-lg: 0.5rem;
-    --radius-sm: 0.25rem;
-
-    /* Legacy compat */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --radius: 0.25rem;
+    --radius-lg: 0.375rem;
+    --radius-sm: 0.1875rem;
   }
-}
-@layer base {
+
   * {
     @apply border-border;
     border-style: solid;
   }
 
   html {
-    font-size: 15px;  /* Improved base size for readability */
+    font-size: 15px;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background;
     margin: 0;
-    font-family:
-      "Inter",
-      system-ui,
-      -apple-system,
-      BlinkMacSystemFont,
-      sans-serif;
-    font-feature-settings:
-      "liga" 1,
-      "calt" 1,
-      "ss01" 1,
-      "cv01" 1;
+    color: hsl(var(--text-secondary));
+    /* Mono everywhere. This is the identity, not an accent. */
+    font-family: "JetBrains Mono Variable", ui-monospace, SFMono-Regular,
+      Consolas, monospace;
+    font-variant-ligatures: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    line-height: 1.6;  /* Better line height for body text */
-    letter-spacing: -0.01em;  /* Tighter tracking for modern feel */
+    line-height: 1.65;
   }
 
-  /* Typography Scale */
   h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
     color: hsl(var(--text-primary));
-  }
-
-  h1 {
-    font-size: 2.25rem;  /* 36px */
     font-weight: 700;
-    margin-bottom: 1rem;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
   }
 
-  h2 {
-    font-size: 1.875rem;  /* 30px */
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-  }
-
-  h3 {
-    font-size: 1.5rem;  /* 24px */
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  h4 {
-    font-size: 1.25rem;  /* 20px */
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  p {
-    margin-bottom: 1rem;
-    color: hsl(var(--text-secondary));
-    line-height: 1.7;
-  }
+  p { color: hsl(var(--text-secondary)); }
 
   strong, b {
-    font-weight: 600;
+    color: hsl(var(--text-primary));
+    font-weight: 700;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  ::selection {
+    background: hsl(var(--accent) / 0.25);
     color: hsl(var(--text-primary));
   }
 
-  a {
-    color: hsl(var(--text-link));
-    text-decoration: none;
+  :focus-visible {
+    outline: 1px solid hsl(var(--accent));
+    outline-offset: 2px;
   }
+}
 
-  code {
-    font-family:
-      "JetBrains Mono",
-      "SFMono-Regular",
-      Consolas,
-      monospace;
-    font-size: 0.875em;
-  }
+/* ===========================================================
+   Markdown-source voice — the page admits it is a README.
+=========================================================== */
+.md-label {
+  color: hsl(var(--accent));
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
 }
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.md-label::before {
+  content: "## ";
+  color: hsl(var(--accent-dim));
 }
-::-webkit-scrollbar-track {
-  background: hsl(var(--background));
+
+.md-comment {
+  color: hsl(var(--text-tertiary));
+  font-style: italic;
 }
+
+/* ===========================================================
+   Scrollbars
+=========================================================== */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
-  border-radius: 2px;
+  background: hsl(var(--border-strong));
+  border: 3px solid hsl(var(--background));
+  border-radius: 6px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground));
-}
-/* Terminal cursor animation */
-@keyframes blink {
-  0%,
-  50% {
-    opacity: 1;
-  }
-  51%,
-  100% {
-    opacity: 0;
-  }
-}
-.terminal-cursor {
-  animation: blink 1.2s steps(2, start) infinite;
-}
-/* Smooth transitions */
-* {
-  transition-property:
-  background-color,
-  border-color,
-  color,
-  opacity,
-  transform;
-transition-timing-function:
-  cubic-bezier(0.2, 0, 0, 1);
-transition-duration: 120ms;
-}
-::selection {
-  background: hsl(var(--primary) / 0.35);
-  color: hsl(var(--foreground));
-}
-code,
-pre,
-.terminal,
-.log,
-.mono {
-  font-family:
-    "JetBrains Mono",
-    "SFMono-Regular",
-    Consolas,
-    monospace;
-}
-/* =========================================
-   Enhanced Prose/Markdown Styling
-========================================= */
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--text-tertiary)); }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===========================================================
+   Motion
+   -------
+   Rules this layer follows:
+     1. Motion explains state, it never decorates.
+     2. Nothing exceeds 320ms; most is under 200ms.
+     3. Everything is CSS — no animation runtime ships to the user.
+     4. The global prefers-reduced-motion block above disables all
+        of it in one place.
+=========================================================== */
+
+:root {
+  /* Curves lifted from yui540/css-animations. They are extreme slow-fast-slow
+     rather than conventional ease-out, and that middle acceleration is what
+     gives the motion its snap. Used for anything that moves as an object. */
+  --ease-panel: cubic-bezier(0.78, 0.01, 0.19, 0.98);
+  --ease-snap: cubic-bezier(0.87, 0.05, 0.02, 0.97);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-mechanical: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Terminal output. New lines only, staggered by --i, so a command's
+   response reads as arriving rather than appearing all at once. */
+@keyframes line-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: none; }
+}
+.line-in {
+  animation: line-in 170ms var(--ease-out) backwards;
+  /* Capped: a 20-line `help` must not take 600ms to finish printing, and
+     the pane auto-scrolls to the bottom so the wait is staring at blank. */
+  animation-delay: calc(min(var(--i, 0), 8) * 14ms);
+}
+
+/* File viewer opening in place */
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.panel-in { animation: panel-in 260ms var(--ease-panel) backwards; }
+
+/* Full-screen reader: the backdrop settles, the sheet rises into it */
+@keyframes backdrop-in { from { opacity: 0 } to { opacity: 1 } }
+.backdrop-in { animation: backdrop-in 200ms ease-out backwards; }
+
+/* Two tracks on one element, the way yui540 layers panel-enter with
+   panel-flatten: the sheet rises while it simultaneously unfolds from its
+   bottom edge, on different durations so the two never resolve together. */
+@keyframes sheet-rise {
+  from { opacity: 0; transform: translateY(12px) scale(0.994); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes sheet-unfold {
+  from { clip-path: inset(0 0 14% 0 round var(--radius)); }
+  to   { clip-path: inset(0 0 0 0 round var(--radius)); }
+}
+.sheet-in {
+  animation:
+    sheet-rise 360ms var(--ease-panel) both,
+    sheet-unfold 620ms var(--ease-panel) both;
+}
+
+/* Headings reveal a word at a time from behind their own baseline —
+   yui540's --delay stagger idiom applied at word rather than character
+   granularity, which keeps the heading one readable string for assistive
+   tech while still reading as typed. */
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  /* protect descenders from the clip */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  vertical-align: bottom;
+}
+@keyframes word-rise {
+  from { transform: translateY(105%); }
+  to   { transform: translateY(0); }
+}
+.word {
+  display: inline-block;
+  /* Deliberately NOT --ease-panel. yui540's slow-fast-slow curve is for an
+     object crossing a scene; behind a mask its dead first 40% leaves the
+     heading blank long enough to look broken. A reveal wants to leave
+     immediately and settle. */
+  animation: word-rise 440ms var(--ease-out) var(--delay, 0s) both;
+}
+
+/* Post metadata and body follow the title in */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+.rise-in {
+  animation: rise-in 320ms var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+/* A single skewed sweep across a file as it opens. This is yui540's
+   shine-sweep polygon — the leading and trailing edges are offset by
+   --sweep-skew so the band leans as it crosses — pulled right down in
+   opacity so it reads as a scanline rather than a shine. */
+@keyframes scanline-sweep {
+  from {
+    clip-path: polygon(
+      calc(var(--sweep-w) * -1) 0,
+      0 0,
+      calc(var(--sweep-skew) * -1) 100%,
+      calc((var(--sweep-skew) + var(--sweep-w)) * -1) 100%
+    );
+  }
+  60%, to {
+    clip-path: polygon(
+      calc(100% + var(--sweep-skew)) 0,
+      calc(100% + var(--sweep-skew) + var(--sweep-w)) 0,
+      calc(100% + var(--sweep-w)) 100%,
+      100% 100%
+    );
+  }
+}
+.scanline {
+  --sweep-w: 140px;
+  --sweep-skew: 45%;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--accent) / 0.06),
+    transparent
+  );
+  animation: scanline-sweep 1s var(--ease-panel) 100ms both;
+}
+
+/* File explorer rows on directory change */
+.row-in {
+  animation: line-in 220ms var(--ease-panel) backwards;
+  animation-delay: calc(min(var(--i, 0), 8) * 20ms);
+}
+
+/* ===========================================================
+   Micro-interactions
+   ------------------
+   Everything above animates things ARRIVING. This block is the
+   other half: the small acknowledgements that fire when someone
+   actually does something. Rules:
+     - under 160ms, because they must feel like a response, not a
+       performance
+     - triggered by input only; nothing here loops or idles
+     - transform and opacity only, so they never cost layout
+=========================================================== */
+
+/* Press. Nothing on the site acknowledged being clicked before this. */
+.press {
+  /* Colour must stay in the transition list: these classes replace the
+     utility transitions they sit next to, so omitting it makes hover snap. */
+  transition: transform 110ms var(--ease-out), background-color 140ms ease,
+    color 140ms ease;
+}
+.press:active {
+  transform: scale(0.93);
+  transition-duration: 40ms; /* down fast, back slow */
+}
+
+/* Full-width rows squash rather than scale — a shrinking list row
+   reads as broken, a settling one reads as pressed. */
+.press-row {
+  transition: transform 110ms var(--ease-out), background-color 140ms ease,
+    color 140ms ease;
+}
+.press-row:active {
+  transform: translateY(1px);
+  transition-duration: 40ms;
+}
+
+/* Icon buttons lift a hair on hover so the target feels live before
+   you commit to it. */
+.lift {
+  transition: transform 140ms var(--ease-out), background-color 140ms ease,
+    color 140ms ease;
+}
+@media (hover: hover) {
+  .lift:hover { transform: translateY(-1px); }
+}
+.lift:active {
+  transform: translateY(0) scale(0.93);
+  transition-duration: 40ms;
+}
+
+/* Confirmation pop — the copy tick overshoots very slightly, which is
+   what makes it read as "done" rather than "changed". */
+@keyframes confirm-pop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.confirm-pop { animation: confirm-pop 260ms var(--ease-out) both; }
+
+/* The prompt flicks when a command is accepted. Keyed on history length
+   in TerminalPanel so it replays per command and never idles. */
+@keyframes prompt-ack {
+  0%   { transform: translateX(0); opacity: 1; }
+  35%  { transform: translateX(2px); opacity: 0.45; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+.prompt-ack { animation: prompt-ack 240ms var(--ease-out) both; }
+
+/* Autocomplete suggestions arrive rather than blink into place. */
+.suggest-in {
+  animation: line-in 160ms var(--ease-out) backwards;
+  animation-delay: calc(min(var(--i, 0), 10) * 16ms);
+}
+
+/* The active file carries a rule that grows from the top when selected,
+   so selection has a direction instead of just a background change. */
+.active-bar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  background: hsl(var(--accent));
+  transform: translateY(-50%);
+  transition: height 180ms var(--ease-out);
+}
+.active-bar[data-active="true"]::before { height: 60%; }
+
+/* Explorer hover: the chevron leans toward where it will take you */
+.row-chevron { transition: transform 150ms var(--ease-out); }
+.group:hover .row-chevron { transform: translateX(2px); }
+
+/* Underline that grows from the left rather than fading in */
+.link-underline {
+  background-image: linear-gradient(hsl(var(--warm)), hsl(var(--warm)));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 220ms var(--ease-out);
+}
+.link-underline:hover { background-size: 100% 1px; }
+
+/* ===========================================================
+   Prose. Mono long-form needs a shorter measure and more
+   leading than a proportional face would.
+=========================================================== */
 .prose {
-  /* Optimal reading measure */
-  max-width: 68ch;
-
-  /* Enhanced spacing */
-  font-size: 1.0625rem;  /* 17px for better readability */
-  line-height: 1.75;
-  letter-spacing: -0.011em;
-
-  /* Color hierarchy */
+  max-width: 64ch;
+  font-size: 0.9375rem;
+  line-height: 1.85;
   color: hsl(var(--text-secondary));
 }
 
-/* Headings */
+/* Headings are set narrow on purpose: they wrap into two or
+   three short lines and become the visual anchor of the page. */
 .prose h1 {
   color: hsl(var(--text-primary));
-  font-size: 2.5rem;
+  font-size: clamp(1.625rem, 1.1rem + 2.4vw, 2.375rem);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid hsl(var(--border));
-  padding-bottom: 0.75rem;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  max-width: 20ch;
+  margin: 0 0 1.5rem;
 }
 
 .prose h2 {
   color: hsl(var(--text-primary));
-  font-size: 1.875rem;
-  font-weight: 600;
+  font-size: clamp(1.25rem, 1rem + 1.1vw, 1.625rem);
+  font-weight: 700;
   line-height: 1.2;
-  letter-spacing: -0.02em;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid hsl(var(--border));
-  padding-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+  max-width: 24ch;
+  margin: 3.25rem 0 1rem;
 }
 
 .prose h3 {
   color: hsl(var(--text-primary));
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  margin: 2.25rem 0 0.625rem;
 }
 
 .prose h4 {
   color: hsl(var(--text-primary));
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  margin: 1.75rem 0 0.5rem;
 }
 
-/* Paragraphs */
-.prose p {
-  margin-bottom: 1.5rem;
-  line-height: 1.8;
-}
+.prose p { margin: 0 0 1.5rem; }
+.prose p:last-child { margin-bottom: 0; }
 
-.prose p:last-child {
-  margin-bottom: 0;
-}
-
-/* Links */
+/* Amber marks anything clickable */
 .prose a {
-  color: hsl(var(--primary));
-  font-weight: 500;
+  color: hsl(var(--warm));
   text-decoration: underline;
-  text-decoration-color: hsl(var(--primary) / 0.4);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
-  transition: all 180ms cubic-bezier(0.2, 0, 0, 1);
-  border-radius: 3px;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  text-decoration-color: hsl(var(--warm) / 0.4);
+  transition: text-decoration-color 120ms ease;
 }
+.prose a:hover { text-decoration-color: hsl(var(--warm)); }
 
-.prose a:hover {
-  color: hsl(var(--primary-hover));
-  text-decoration-color: hsl(var(--primary));
-  background-color: hsl(var(--primary) / 0.1);
-  padding-inline: 4px;
-  margin-inline: -4px;
-}
+.prose em { font-style: italic; }
 
-/* Strong/Bold */
-.prose strong,
-.prose b {
-  color: hsl(var(--text-primary));
-  font-weight: 600;
-}
+.prose ul, .prose ol { margin: 1.5rem 0; padding-left: 1.5rem; }
+.prose li { margin: 0.5rem 0; }
+.prose li::marker { color: hsl(var(--accent-dim)); }
 
-/* Emphasis */
-.prose em {
-  color: hsl(var(--text-secondary));
-  font-style: italic;
-}
-
-/* Lists */
-.prose ul,
-.prose ol {
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-  padding-left: 1.75rem;
-}
-
-.prose li {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  line-height: 1.7;
-}
-
-.prose li::marker {
-  color: hsl(var(--primary));
-  font-weight: 600;
-}
-
-/* Blockquotes */
+/* Blockquotes read as `//` commentary */
 .prose blockquote {
-  border-left: 4px solid hsl(var(--primary));
-  padding-left: 1.5rem;
-  margin-left: 0;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-  font-style: italic;
+  border-left: 2px solid hsl(var(--border-strong));
+  padding-left: 1.25rem;
+  margin: 2rem 0;
   color: hsl(var(--text-tertiary));
-  background: hsl(var(--primary) / 0.05);
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  border-radius: var(--radius);
+  font-style: italic;
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+
+/* @tailwindcss/typography wraps every inline <code> in literal backtick
+   characters via ::before/::after. They do not appear in textContent, so they
+   survive DOM inspection and only show up rendered — and because the CodeBlock
+   has no <pre> ancestor, they were landing on fenced blocks too. */
+.prose code::before,
+.prose code::after {
+  content: none;
 }
 
-.prose blockquote p {
-  margin-bottom: 0.5rem;
-}
-
-/* Inline Code */
 .prose code {
-  background: hsl(var(--muted));
+  background: hsl(var(--surface-elevated));
   border: 1px solid hsl(var(--border));
-  color: hsl(var(--text-code));
-  padding: 0.2em 0.4em;
+  color: hsl(var(--accent));
+  padding: 0.1em 0.35em;
   border-radius: var(--radius-sm);
   font-size: 0.9em;
-  font-weight: 500;
-  font-family: "JetBrains Mono", monospace;
 }
 
-.prose a code {
-  color: hsl(var(--primary));
-}
-
-/* Code Blocks */
 .prose pre {
-  background: hsl(210 18% 12%) !important;
+  background: hsl(var(--surface)) !important;
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius);
-  padding: 1.25rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  padding: 1.125rem;
+  margin: 2rem 0;
   overflow-x: auto;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
 }
-
 .prose pre code {
   background: transparent;
   border: none;
   padding: 0;
-  color: hsl(var(--foreground));
-  font-size: 0.875rem;
+  color: inherit;
+  font-size: 0.8125rem;
   line-height: 1.7;
 }
 
-/* Horizontal Rule */
-.prose hr {
-  border: none;
-  border-top: 2px solid hsl(var(--border));
-  margin-top: 3rem;
-  margin-bottom: 3rem;
+/* CodeBlock renders its own chrome, so react-markdown's <pre> is stripped
+   before it — which means the `.prose pre code` reset above never matches it.
+   Without this, `.prose code` (styling meant for inline spans) paints a
+   background, border and padding onto the block's <code>; because that element
+   is inline and spans many lines, the browser draws one box per visual line. */
+.code-block code {
+  display: block;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.code-block .linenumber {
+  font-style: normal !important;
+  opacity: 0.55;
 }
 
-/* Tables */
+.prose hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 3.5rem 0;
+}
+
 .prose table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-  font-size: 0.9375rem;
+  margin: 2rem 0;
+  font-size: 0.875rem;
 }
-
-.prose thead {
-  background: hsl(var(--surface-elevated));
-  border-bottom: 2px solid hsl(var(--border));
-}
-
+.prose thead { border-bottom: 1px solid hsl(var(--border-strong)); }
 .prose th {
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 1rem 0.5rem 0;
   text-align: left;
-  font-weight: 600;
-  color: hsl(var(--text-primary));
+  font-weight: 700;
+  color: hsl(var(--accent));
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
 }
-
 .prose td {
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 1rem 0.625rem 0;
   border-bottom: 1px solid hsl(var(--border));
 }
 
-.prose tbody tr:hover {
-  background: hsl(var(--surface-hover));
-}
-
-/* Images - Enhanced */
 .prose img {
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border));
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  transition: all 300ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.prose img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
-}
-
-/* Code syntax highlighting */
-/* Infrastructure Syntax Theme */
-.language-python .keyword,
-.language-json .property,
-.language-markdown .title {
-  color: #2f81f7;
-}
-.language-python .string,
-.language-json .string {
-  color: #f0f6fc;
-}
-.language-python .comment {
-  color: #8b949e;
-}
-.language-python .function,
-.language-markdown .code {
-  color: #7ee787;
-}
-.language-json .number,
-.language-markdown .list {
-  color: #a5d6ff;
+  margin: 2.25rem 0;
+  max-width: 100%;
 }

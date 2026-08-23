@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter"
-import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism"
 import { Copy, Check } from "lucide-react"
 
 // Prism language imports
@@ -35,24 +34,70 @@ interface CodeBlockProps {
 }
 
 const LANGUAGE_LABELS: Record<string, string> = {
-  bash: "Bash",
-  json: "JSON",
-  yaml: "YAML",
-  yml: "YAML",
-  markdown: "Markdown",
-  md: "Markdown",
-  ts: "TypeScript",
-  tsx: "TypeScript (JSX)",
-  js: "JavaScript",
-  jsx: "JavaScript (JSX)",
-  python: "Python",
-  py: "Python",
-  tf: "Terraform",
-  java: "Java",
+  bash: "bash",
+  json: "json",
+  yaml: "yaml",
+  yml: "yaml",
+  markdown: "markdown",
+  md: "markdown",
+  ts: "typescript",
+  tsx: "tsx",
+  js: "javascript",
+  jsx: "jsx",
+  python: "python",
+  py: "python",
+  tf: "terraform",
+  java: "java",
+}
+
+/**
+ * Syntax theme built from the site's own tokens rather than an off-the-shelf
+ * one. The two accents keep the jobs they have everywhere else — green for
+ * values, amber for keywords and numbers — so code reads as part of the page
+ * instead of a pasted-in screenshot.
+ */
+const THEME: Record<string, React.CSSProperties> = {
+  'code[class*="language-"]': {
+    color: "hsl(var(--text-secondary))",
+    background: "none",
+    fontFamily: "inherit",
+  },
+  comment: { color: "hsl(var(--text-tertiary))", fontStyle: "italic" },
+  prolog: { color: "hsl(var(--text-tertiary))" },
+  doctype: { color: "hsl(var(--text-tertiary))" },
+  cdata: { color: "hsl(var(--text-tertiary))" },
+  punctuation: { color: "hsl(var(--text-tertiary))" },
+  property: { color: "hsl(var(--text-primary))" },
+  tag: { color: "hsl(var(--text-primary))" },
+  "attr-name": { color: "hsl(var(--text-primary))" },
+  boolean: { color: "hsl(var(--warm))" },
+  number: { color: "hsl(var(--warm))" },
+  constant: { color: "hsl(var(--warm))" },
+  symbol: { color: "hsl(var(--warm))" },
+  selector: { color: "hsl(var(--accent))" },
+  string: { color: "hsl(var(--accent))" },
+  char: { color: "hsl(var(--accent))" },
+  "attr-value": { color: "hsl(var(--accent))" },
+  builtin: { color: "hsl(var(--accent))" },
+  inserted: { color: "hsl(var(--accent))" },
+  deleted: { color: "hsl(var(--danger))" },
+  operator: { color: "hsl(var(--text-secondary))" },
+  entity: { color: "hsl(var(--text-secondary))" },
+  url: { color: "hsl(var(--warm))" },
+  variable: { color: "hsl(var(--text-secondary))" },
+  atrule: { color: "hsl(var(--warm))" },
+  keyword: { color: "hsl(var(--warm))" },
+  "class-name": { color: "hsl(var(--text-primary))", fontWeight: 700 },
+  function: { color: "hsl(var(--text-primary))", fontWeight: 700 },
+  regex: { color: "hsl(var(--accent))" },
+  important: { color: "hsl(var(--danger))", fontWeight: 700 },
+  bold: { fontWeight: 700 },
+  italic: { fontStyle: "italic" },
 }
 
 export const CodeBlock = ({ language, value }: CodeBlockProps) => {
   const [copied, setCopied] = useState(false)
+  const lineCount = value.split("\n").length
 
   const handleCopy = async () => {
     try {
@@ -65,56 +110,61 @@ export const CodeBlock = ({ language, value }: CodeBlockProps) => {
   }
 
   return (
-    <div className="relative group my-6">
-      {/* Header with language label and copy button */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[hsl(210,18%,12%)] border border-border rounded-t-lg border-b-0">
-        <span className="text-xs font-semibold text-text-tertiary uppercase tracking-wider">
+    <div className="code-block group relative my-7 overflow-hidden rounded border border-border">
+      <div className="flex items-center gap-3 border-b border-border bg-surface-elevated px-3.5 py-1.5">
+        <span className="text-2xs text-text-tertiary">
           {LANGUAGE_LABELS[language] || language}
         </span>
-        <button
-          onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2 py-1 text-xs rounded-md bg-surface-elevated hover:bg-surface-hover text-text-secondary hover:text-text-primary transition-all opacity-0 group-hover:opacity-100"
-          aria-label="Copy code"
-        >
-          {copied ? (
-            <>
-              <Check className="w-3.5 h-3.5 text-success" />
-              <span className="text-success">Copied!</span>
-            </>
-          ) : (
-            <>
-              <Copy className="w-3.5 h-3.5" />
-              <span>Copy</span>
-            </>
-          )}
-        </button>
+
+        <span className="ml-auto flex items-center gap-3">
+          <span className="text-2xs tabular-nums text-text-tertiary opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+            {lineCount} {lineCount === 1 ? "line" : "lines"}
+          </span>
+          <button
+            onClick={handleCopy}
+            className="press flex items-center gap-1.5 rounded-sm px-1.5 py-0.5 text-2xs text-text-tertiary opacity-0 hover:text-text-primary focus-visible:opacity-100 group-hover:opacity-100"
+            aria-label={copied ? "Copied" : "Copy code"}
+          >
+            {copied ? (
+              <>
+                <Check className="confirm-pop size-3 text-accent" strokeWidth={2} />
+                <span className="text-accent">copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="size-3" strokeWidth={1.75} />
+                copy
+              </>
+            )}
+          </button>
+        </span>
       </div>
 
-      {/* Code block */}
-      <div className="border border-border rounded-b-lg overflow-hidden shadow-lg">
-        <SyntaxHighlighter
-          language={language}
-          style={atomDark}
-          PreTag="div"
-          customStyle={{
-            margin: 0,
-            borderRadius: 0,
-            fontSize: "0.875rem",
-            lineHeight: "1.7",
-            padding: "1.25rem",
-            background: "hsl(210, 18%, 12%)",
-          }}
-          showLineNumbers={value.split("\n").length > 10}
-          lineNumberStyle={{
-            minWidth: "3em",
-            paddingRight: "1em",
-            color: "hsl(212, 9%, 45%)",
-            userSelect: "none",
-          }}
-        >
-          {value}
-        </SyntaxHighlighter>
-      </div>
+      <SyntaxHighlighter
+        language={language}
+        style={THEME}
+        PreTag="div"
+        customStyle={{
+          margin: 0,
+          borderRadius: 0,
+          fontSize: "0.8125rem",
+          lineHeight: "1.7",
+          padding: "1.125rem",
+          background: "hsl(var(--surface))",
+        }}
+        codeTagProps={{ style: { fontFamily: "inherit" } }}
+        // Numbers on anything multi-line: a gutter that comes and goes with
+        // length makes two adjacent blocks look like different components.
+        showLineNumbers={lineCount > 1}
+        lineNumberStyle={{
+          minWidth: "2.25em",
+          paddingRight: "1.25em",
+          color: "hsl(var(--text-tertiary))",
+          userSelect: "none",
+        }}
+      >
+        {value}
+      </SyntaxHighlighter>
     </div>
   )
 }

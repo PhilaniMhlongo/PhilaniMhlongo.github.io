@@ -25,8 +25,8 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
   const [selectedFile, setSelectedFile] = useState<FileSystemItem | null>(null)
   const [selectedFileContent, setSelectedFileContent] = useState("")
   const [terminalHistory, setTerminalHistory] = useState<string[]>([
-    "Welcome to Philani's DevOps Workspace",
-    'Type "help" for available commands',
+    "philani mhlongo — platform & devops engineer",
+    "// type `help` for available commands",
     "",
   ])
 
@@ -37,13 +37,17 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
         const metadata = await fetchBlogMetadata()
         const featured = getFeaturedPosts(metadata.posts)
         if (featured.length > 0) {
+          // Metadata resolves asynchronously, so anything already printed
+          // in the meantime (a failed deep link, an early command) must be
+          // preserved rather than truncated away.
           setTerminalHistory(prev => [
-            ...prev.slice(0, 3), // Keep welcome message
+            ...prev.slice(0, 3), // the banner
             ...formatFeaturedPosts(featured),
-            ""
+            "",
+            ...prev.slice(3),    // whatever arrived before we did
           ])
         }
-      } catch (error) {
+      } catch {
         // Silently fail if metadata not available
       }
     }
@@ -53,13 +57,37 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
   const terminalRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // Command history for ↑/↓ recall. index === -1 means "not navigating".
+  const commandHistoryRef = useRef<{ items: string[]; index: number }>({ items: [], index: -1 })
+
+  const navigateHistory = (direction: "up" | "down") => {
+    const history = commandHistoryRef.current
+    if (history.items.length === 0) return
+
+    if (direction === "up") {
+      history.index = history.index === -1
+        ? history.items.length - 1
+        : Math.max(0, history.index - 1)
+      setCurrentCommand(history.items[history.index])
+    } else {
+      if (history.index === -1) return
+      history.index += 1
+      if (history.index >= history.items.length) {
+        history.index = -1
+        setCurrentCommand("")
+      } else {
+        setCurrentCommand(history.items[history.index])
+      }
+    }
+  }
+
   const handleTabAutocomplete = () => {
     const [cmd, ...args] = currentCommand.split(" ")
     const partial = args.join("")
 
   const matches = getCurrentDirectory()
     .map(i => i.name)
-    .filter(name => name.startsWith(partial))
+    .filter(name => name.toLowerCase().startsWith(partial.toLowerCase()))
 
   if (matches.length === 1) {
     setCurrentCommand(`${cmd} ${matches[0]}`)
@@ -69,21 +97,60 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
   }
 }
 
- 
-  const getCurrentDirectory = () => {
+  const getDirectoryAt = (path: string[]): FileSystemItem[] | null => {
     let current = fileSystem
-    for (const segment of currentPath) {
-      const found = current.find(i => i.name === segment && i.type === "directory")
-      if (!found || !found.children) return []
+    for (const segment of path) {
+      const found = current.find(
+        i => i.name.toLowerCase() === segment.toLowerCase() && i.type === "directory"
+      )
+      if (!found || !found.children) return null
       current = found.children
     }
     return current
   }
 
+  const getCurrentDirectory = () => getDirectoryAt(currentPath) ?? []
+
+  // Resolve a path argument like "welcome.md", "blog/welcome.md",
+  // "../about.md" or "/blog/welcome.md" into a directory path + item name.
+  const resolvePath = (arg: string): { dirPath: string[]; name: string } | null => {
+    const segments = arg.split("/").filter(s => s.length > 0 && s !== ".")
+    if (segments.length === 0) return null
+
+    const name = segments.pop()!
+    const dirPath = arg.startsWith("/") ? [] : [...currentPath]
+
+    for (const segment of segments) {
+      if (segment === "..") {
+        dirPath.pop()
+        continue
+      }
+      const dir = getDirectoryAt(dirPath)
+      const found = dir?.find(
+        i => i.type === "directory" && i.name.toLowerCase() === segment.toLowerCase()
+      )
+      if (!found) return null
+      dirPath.push(found.name)
+    }
+
+    return { dirPath, name }
+  }
+
   const executeCommand = async (cmd: string) => {
-    const lowerCmd = cmd.trim().toLowerCase()
-    const [command, ...args] = lowerCmd.split(" ")
+    const trimmed = cmd.trim()
+    // Only the command word is case-insensitive; arguments (file names,
+    // search queries) keep their original casing.
+    const [rawCommand, ...args] = trimmed.split(/\s+/)
+    const command = (rawCommand ?? "").toLowerCase()
     let output: string[] = []
+
+    if (trimmed) {
+      const history = commandHistoryRef.current
+      if (history.items[history.items.length - 1] !== trimmed) {
+        history.items.push(trimmed)
+      }
+      history.index = -1
+    }
 
     setSelectedFile(null)
     setSelectedFileContent("")
@@ -93,58 +160,93 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
     switch (command) {
       case "help":
         output = [
-          "Available commands:",
           "",
-          "Navigation:",
-          "  ls              List files/directories",
-          "  cd <dir>        Change directory",
-          "  cat <file>      View file content",
-          "  pwd             Print working directory",
+          "## navigation",
+          "  ls                   list this directory",
+          "  cd <dir>             change directory",
+          "  cat <file>           read a file — paths work: cat blog/welcome.md",
+          "  pwd                  print working directory",
           "",
-          "Blog:",
-          "  blog            List all blog posts",
-          "  blog --tag <t>  Filter posts by tag",
-          "  blog --recent N Show N recent posts",
-          "  blog --featured Show featured posts",
-          "  blog --tags     List all tags",
-          "  search <query>  Search blog posts",
+          "## writing",
+          "  blog                 list every post",
+          "  blog --tag <tag>     filter by tag",
+          "  blog --recent <n>    n most recent",
+          "  blog --featured      featured only",
+          "  blog --tags          list every tag",
+          "  search <query>       search posts",
           "",
-          "Other:",
-          "  whoami          About me",
-          "  clear           Clear terminal",
+          "## other",
+          "  whoami               about me",
+          "  clear                clear the screen",
+          "",
+          "// tab completes filenames · ↑ ↓ recalls history",
         ]
         break
       case "ls":
-        output = dir.map(i => `${i.type === "directory" ? "📁" : "📄"} ${i.name}`)
+        // Directories carry a trailing slash, as a real shell does
+        output = dir.map(i => (i.type === "directory" ? `${i.name}/` : i.name))
         break
-      case "cd":
-        if (!args.length) setCurrentPath([])
-        else if (args[0] === "..") setCurrentPath(prev => prev.slice(0, -1))
-        else {
-          const target = dir.find(d => d.name === args[0] && d.type === "directory")
-          if (target) setCurrentPath(prev => [...prev, args[0]])
-          else output = [`Directory not found: ${args[0]}`]
+      case "cd": {
+        if (!args.length) {
+          setCurrentPath([])
+          break
         }
+        const segments = args[0].split("/").filter(s => s.length > 0 && s !== ".")
+        const newPath = args[0].startsWith("/") ? [] : [...currentPath]
+        let failed: string | null = null
+
+        for (const segment of segments) {
+          if (segment === "..") {
+            newPath.pop()
+            continue
+          }
+          const dirItems = getDirectoryAt(newPath)
+          const found = dirItems?.find(
+            i => i.type === "directory" && i.name.toLowerCase() === segment.toLowerCase()
+          )
+          if (!found) {
+            failed = segment
+            break
+          }
+          newPath.push(found.name)
+        }
+
+        if (failed) output = [`Directory not found: ${failed}`]
+        else setCurrentPath(newPath)
         break
-      case "cat":
-        const file = dir.find(f => f.name === args[0] && f.type === "file")
-        if (file) {
+      }
+      case "cat": {
+        if (!args.length) {
+          output = ["Usage: cat <file>"]
+          break
+        }
+        const resolved = resolvePath(args[0])
+        const targetDir = resolved ? getDirectoryAt(resolved.dirPath) : null
+        const file = targetDir?.find(
+          f => f.type === "file" && f.name.toLowerCase() === resolved!.name.toLowerCase()
+        )
+        if (file && resolved) {
+          // Keep the explorer and URL in sync when opening via a path
+          if (resolved.dirPath.join("/") !== currentPath.join("/")) {
+            setCurrentPath(resolved.dirPath)
+          }
           setSelectedFile(file)
           const content = await getFileContent(file)
           setSelectedFileContent(content)
 
           // Calculate and show reading time for blog posts
-          const isBlogPost = currentPath.includes("blog") && file.extension === "md"
+          const isBlogPost = resolved.dirPath.includes("blog") && file.extension === "md"
           if (isBlogPost) {
             const readingTime = calculateReadingTime(content)
-            output = [`📄 Opening ${args[0]} (${readingTime})...`]
+            output = [`${file.name}  ·  ${readingTime}`]
           } else {
-            output = [`Opening ${args[0]}...`]
+            output = [file.name]
           }
         } else {
           output = [`File not found: ${args[0]}`]
         }
         break
+      }
       case "pwd":
         output = [`/${currentPath.join("/")}`]
         break
@@ -152,7 +254,14 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
         setTerminalHistory([])
         return
       case "whoami":
-        output = ["Philani Mhlongo", "DevOps Engineer", "South Africa"]
+        output = [
+          "philani mhlongo",
+          "platform & devops engineer",
+          "durban, kwazulu-natal, south africa",
+          "",
+          "aws · kubernetes · azure devops · oracle oipa",
+          "aws certified cloudops engineer – associate · cka in progress",
+        ]
 
         // Add featured posts
         try {
@@ -161,7 +270,7 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
           if (featured.length > 0) {
             output.push(...formatFeaturedPosts(featured))
           }
-        } catch (error) {
+        } catch {
           // Silently fail if metadata not available
         }
         break
@@ -183,14 +292,14 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
           // Filter by tag
           if (flags.tag && typeof flags.tag === 'string') {
             posts = filterPostsByTag(posts, flags.tag)
-            output = formatBlogListings(posts, `📝 Posts tagged: ${flags.tag}`)
+            output = formatBlogListings(posts, `posts tagged ${flags.tag}`)
             break
           }
 
           // Show featured only
           if (flags.featured) {
             posts = getFeaturedPosts(posts)
-            output = formatBlogListings(posts, '⭐ Featured Posts')
+            output = formatBlogListings(posts, 'featured posts')
             break
           }
 
@@ -199,14 +308,14 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
             const count = parseInt(flags.recent, 10)
             if (!isNaN(count) && count > 0) {
               posts = getRecentPosts(posts, count)
-              output = formatBlogListings(posts, `📰 ${count} Most Recent Posts`)
+              output = formatBlogListings(posts, `${count} most recent`)
               break
             }
           }
 
           // Default: show all posts sorted by date
           posts = sortPostsByDate(posts)
-          output = formatBlogListings(posts, '📝 All Blog Posts')
+          output = formatBlogListings(posts, 'all posts')
         } catch (error) {
           output = [
             'Error loading blog posts.',
@@ -250,6 +359,17 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
     setTerminalHistory(prev => [...prev, `$ ${cmd}`, ...output, ""])
   }
 
+  /** Report a deep link that no longer resolves, in the terminal's own voice. */
+  const reportMissingPath = (path: string) => {
+    setTerminalHistory(prev => [
+      ...prev,
+      `$ cat ${path}`,
+      `cat: ${path}: no such file or directory`,
+      "// `ls` to see what's here, or `help` for everything",
+      "",
+    ])
+  }
+
   useEffect(() => {
     if (terminalRef.current) terminalRef.current.scrollTop = terminalRef.current.scrollHeight
   }, [terminalHistory])
@@ -268,9 +388,9 @@ export const useTerminal = (fileSystem: FileSystemItem[]) => {
     getCurrentDirectory,
     setSelectedFile,
     setSelectedFileContent,
-    handleTabAutocomplete, 
+    handleTabAutocomplete,
+    navigateHistory,
+    reportMissingPath,
     autocompleteSuggestions
-    
   }
 }
-
