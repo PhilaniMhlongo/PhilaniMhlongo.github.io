@@ -468,6 +468,15 @@
 }
 .prose blockquote p:last-child { margin-bottom: 0; }
 
+/* @tailwindcss/typography wraps every inline <code> in literal backtick
+   characters via ::before/::after. They do not appear in textContent, so they
+   survive DOM inspection and only show up rendered — and because the CodeBlock
+   has no <pre> ancestor, they were landing on fenced blocks too. */
+.prose code::before,
+.prose code::after {
+  content: none;
+}
+
 .prose code {
   background: hsl(var(--surface-elevated));
   border: 1px solid hsl(var(--border));
@@ -492,6 +501,26 @@
   color: inherit;
   font-size: 0.8125rem;
   line-height: 1.7;
+}
+
+/* CodeBlock renders its own chrome, so react-markdown's <pre> is stripped
+   before it — which means the `.prose pre code` reset above never matches it.
+   Without this, `.prose code` (styling meant for inline spans) paints a
+   background, border and padding onto the block's <code>; because that element
+   is inline and spans many lines, the browser draws one box per visual line. */
+.code-block code {
+  display: block;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.code-block .linenumber {
+  font-style: normal !important;
+  opacity: 0.55;
 }
 
 .prose hr {
