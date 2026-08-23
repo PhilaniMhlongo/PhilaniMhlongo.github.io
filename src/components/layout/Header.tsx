@@ -84,7 +84,7 @@ export const Header = ({ isTerminalOpen, onTerminalToggle, openFile }: HeaderPro
               rel="noopener noreferrer"
               aria-label={label}
               title={label}
-              className="flex size-[44px] items-center justify-center rounded text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary sm:size-8"
+              className="lift flex size-[44px] items-center justify-center rounded text-text-tertiary hover:bg-surface-hover hover:text-text-primary sm:size-8"
             >
               <Icon className="size-[15px]" strokeWidth={1.75} />
             </a>
@@ -96,7 +96,7 @@ export const Header = ({ isTerminalOpen, onTerminalToggle, openFile }: HeaderPro
             onClick={onTerminalToggle}
             aria-pressed={isTerminalOpen}
             title={isTerminalOpen ? "Hide terminal" : "Show terminal"}
-            className={`flex size-[44px] items-center justify-center rounded transition-colors duration-150 sm:size-8 ${
+            className={`lift flex size-[44px] items-center justify-center rounded sm:size-8 ${
               isTerminalOpen
                 ? "bg-surface-hover text-accent"
                 : "text-text-tertiary hover:bg-surface-hover hover:text-text-primary"

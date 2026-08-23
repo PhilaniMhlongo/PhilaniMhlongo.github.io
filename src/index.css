@@ -289,6 +289,94 @@
   animation-delay: calc(min(var(--i, 0), 8) * 20ms);
 }
 
+/* ===========================================================
+   Micro-interactions
+   ------------------
+   Everything above animates things ARRIVING. This block is the
+   other half: the small acknowledgements that fire when someone
+   actually does something. Rules:
+     - under 160ms, because they must feel like a response, not a
+       performance
+     - triggered by input only; nothing here loops or idles
+     - transform and opacity only, so they never cost layout
+=========================================================== */
+
+/* Press. Nothing on the site acknowledged being clicked before this. */
+.press {
+  /* Colour must stay in the transition list: these classes replace the
+     utility transitions they sit next to, so omitting it makes hover snap. */
+  transition: transform 110ms var(--ease-out), background-color 140ms ease,
+    color 140ms ease;
+}
+.press:active {
+  transform: scale(0.93);
+  transition-duration: 40ms; /* down fast, back slow */
+}
+
+/* Full-width rows squash rather than scale — a shrinking list row
+   reads as broken, a settling one reads as pressed. */
+.press-row {
+  transition: transform 110ms var(--ease-out), background-color 140ms ease,
+    color 140ms ease;
+}
+.press-row:active {
+  transform: translateY(1px);
+  transition-duration: 40ms;
+}
+
+/* Icon buttons lift a hair on hover so the target feels live before
+   you commit to it. */
+.lift {
+  transition: transform 140ms var(--ease-out), background-color 140ms ease,
+    color 140ms ease;
+}
+@media (hover: hover) {
+  .lift:hover { transform: translateY(-1px); }
+}
+.lift:active {
+  transform: translateY(0) scale(0.93);
+  transition-duration: 40ms;
+}
+
+/* Confirmation pop — the copy tick overshoots very slightly, which is
+   what makes it read as "done" rather than "changed". */
+@keyframes confirm-pop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.confirm-pop { animation: confirm-pop 260ms var(--ease-out) both; }
+
+/* The prompt flicks when a command is accepted. Keyed on history length
+   in TerminalPanel so it replays per command and never idles. */
+@keyframes prompt-ack {
+  0%   { transform: translateX(0); opacity: 1; }
+  35%  { transform: translateX(2px); opacity: 0.45; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+.prompt-ack { animation: prompt-ack 240ms var(--ease-out) both; }
+
+/* Autocomplete suggestions arrive rather than blink into place. */
+.suggest-in {
+  animation: line-in 160ms var(--ease-out) backwards;
+  animation-delay: calc(min(var(--i, 0), 10) * 16ms);
+}
+
+/* The active file carries a rule that grows from the top when selected,
+   so selection has a direction instead of just a background change. */
+.active-bar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  background: hsl(var(--accent));
+  transform: translateY(-50%);
+  transition: height 180ms var(--ease-out);
+}
+.active-bar[data-active="true"]::before { height: 60%; }
+
 /* Explorer hover: the chevron leans toward where it will take you */
 .row-chevron { transition: transform 150ms var(--ease-out); }
 .group:hover .row-chevron { transform: translateX(2px); }

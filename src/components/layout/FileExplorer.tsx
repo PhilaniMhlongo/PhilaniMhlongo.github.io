@@ -32,7 +32,7 @@ export const FileExplorer = ({ terminal }: Props) => {
             onClick={() =>
               terminal.setCurrentPath(terminal.currentPath.slice(0, -1))
             }
-            className="row-in mb-0.5 flex min-h-[44px] w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary sm:min-h-0"
+            className="row-in press-row mb-0.5 flex min-h-[44px] w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-text-tertiary hover:bg-surface-hover hover:text-text-primary sm:min-h-0"
           >
             <ChevronLeft className="size-3.5 shrink-0" strokeWidth={1.75} />
             <span className="font-mono text-[0.8125rem]">..</span>
@@ -53,7 +53,8 @@ export const FileExplorer = ({ terminal }: Props) => {
                     ])
                   : terminal.executeCommand(`cat ${item.name}`)
               }
-              className={`row-in group flex min-h-[44px] w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left transition-colors duration-150 sm:min-h-0 ${
+              data-active={isActive}
+              className={`row-in press-row active-bar group relative flex min-h-[44px] w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left sm:min-h-0 ${
                 isActive
                   ? "bg-surface-hover text-text-primary"
                   : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"

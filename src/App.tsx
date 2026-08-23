@@ -139,7 +139,7 @@ function App() {
 
   // 44px is the touch minimum; the compact size is a pointer-only affordance.
   const viewerButton =
-    "flex size-[44px] items-center justify-center rounded-sm text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary sm:size-7"
+    "press flex size-[44px] items-center justify-center rounded-sm text-text-tertiary hover:bg-surface-hover hover:text-text-primary sm:size-7"
 
   return (
     <div className="min-h-screen">

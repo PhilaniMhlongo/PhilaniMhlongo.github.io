@@ -217,7 +217,7 @@ export const FileRenderer = ({
               {siblings.older ? (
                 <button
                   onClick={() => goToPost(siblings.older!)}
-                  className="group text-left"
+                  className="press-row group text-left"
                 >
                   <span className="block text-2xs text-text-tertiary">
                     ← older
@@ -233,7 +233,7 @@ export const FileRenderer = ({
               {siblings.newer && (
                 <button
                   onClick={() => goToPost(siblings.newer!)}
-                  className="group text-left sm:text-right"
+                  className="press-row group text-left sm:text-right"
                 >
                   <span className="block text-2xs text-text-tertiary">
                     newer →

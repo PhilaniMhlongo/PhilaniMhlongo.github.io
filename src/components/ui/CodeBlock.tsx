@@ -72,13 +72,13 @@ export const CodeBlock = ({ language, value }: CodeBlockProps) => {
         </span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 rounded-sm px-1.5 py-0.5 font-mono text-2xs text-text-tertiary opacity-0 transition-opacity duration-150 hover:text-text-primary focus-visible:opacity-100 group-hover:opacity-100"
+          className="press flex items-center gap-1.5 rounded-sm px-1.5 py-0.5 font-mono text-2xs text-text-tertiary opacity-0 hover:text-text-primary focus-visible:opacity-100 group-hover:opacity-100"
           aria-label={copied ? "Copied" : "Copy code"}
         >
           {copied ? (
             <>
-              <Check className="size-3" strokeWidth={1.75} />
-              copied
+              <Check className="confirm-pop size-3 text-accent" strokeWidth={2} />
+              <span className="text-accent">copied</span>
             </>
           ) : (
             <>

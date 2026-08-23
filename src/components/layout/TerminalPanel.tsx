@@ -23,7 +23,7 @@ const ChromeButton = ({
     onClick={onClick}
     aria-label={label}
     title={label}
-    className="flex size-[44px] items-center justify-center rounded-sm text-text-tertiary transition-colors duration-150 hover:bg-surface-hover hover:text-text-primary sm:size-6"
+    className="press flex size-[44px] items-center justify-center rounded-sm text-text-tertiary hover:bg-surface-hover hover:text-text-primary sm:size-6"
   >
     {children}
   </button>
@@ -118,7 +118,12 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
           })}
 
           <div className="mt-1 flex items-center gap-2">
-            <span className="select-none text-accent" aria-hidden>
+            {/* Keyed on history length so the flick replays per command. */}
+            <span
+              key={terminal.terminalHistory.length}
+              className="prompt-ack select-none text-accent"
+              aria-hidden
+            >
               ❯
             </span>
             <input
@@ -153,8 +158,14 @@ export const TerminalPanel = ({ terminal, isOpen = true, onClose }: Props) => {
 
           {terminal.autocompleteSuggestions.length > 1 && (
             <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 pl-4 text-text-tertiary">
-              {terminal.autocompleteSuggestions.map((s) => (
-                <span key={s}>{s}</span>
+              {terminal.autocompleteSuggestions.map((s, i) => (
+                <span
+                  key={s}
+                  className="suggest-in"
+                  style={{ "--i": i } as React.CSSProperties}
+                >
+                  {s}
+                </span>
               ))}
             </div>
           )}
